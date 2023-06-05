@@ -1,0 +1,353 @@
+@media (max-width: 1000px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  body {
+    background-color: rgb(255, 255, 255);
+  }
+  nav {
+    height: 50px;
+    max-width: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: flex-end;
+    box-shadow: 1px 1px 5px rgba(31, 31, 31, 0.229);
+    position: fixed;
+    z-index: 1;
+  }
+
+  nav h3 {
+    margin-left: 320px;
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    background-size: cover;
+  }
+  .hero-title p {
+    width: 400px;
+  }
+  .hero-title h1 {
+    font-size: 2rem;
+    margin-top: 100px;
+    margin-left: 10px;
+  }
+  .hero-title span::after {
+    position: absolute;
+    content: "";
+    height: 3px;
+    width: 150px;
+    left: 10px;
+    top: 170px;
+  }
+  .hero-image img {
+    width: 200px;
+    margin-top: -40px;
+    margin-bottom: 400px;
+    margin-left: 300px;
+  }
+  .cards {
+    display: grid;
+
+    height: 800px;
+    background-color: #fff;
+    margin-top: -20px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 200px 200px;
+    grid-template-rows: 1fr 1fr;
+    gap: -10px;
+    position: relative;
+  }
+  .cardclass {
+    width: 150px;
+    height: 250px;
+    box-shadow: 1px 1px 5px rgb(31 31 31 / 23%);
+    margin-left: 30px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+    top: -72px;
+    transition: 0.15s transform linear;
+    margin-top: 21px;
+  }
+
+  .cardclass img {
+    margin-top: 18px;
+    width: 100px;
+  }
+  .cardclass p {
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  .cardclass:hover {
+    transform: scale(1);
+  }
+  .cardclass button {
+    padding: 7px 16px;
+  }
+
+  .description {
+    width: 100%;
+    height: 750px;
+    background-color: #fff;
+    display: grid;
+    grid-template-rows: repeat(2, 300px);
+    align-items: center;
+    padding: 15px;
+    margin-left: 150px;
+  }
+
+  .circle img {
+    width: 200px;
+    position: absolute;
+    top: 90px;
+    left: 70px;
+    transform: rotate(30deg);
+    transition: 0.15 transform linear;
+  }
+
+  .circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    background-color: rgb(0, 255, 17);
+    position: relative;
+  }
+  .des-title {
+    margin-left: 20px;
+    width: 350px;
+    margin-top: -100px;
+  }
+  .des-image {
+    align-self: start;
+  }
+  footer {
+    width: 100%;
+    height: 700px;
+    background-color: #25262b;
+  }
+  .footer {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    margin-right: 200px;
+
+    margin-top: -60px;
+  }
+  .follow {
+    margin-top: 0;
+    margin-left: 80px;
+  }
+  .online-shop h3 {
+    margin-top: 0;
+  }
+
+  #menu__toggle {
+    opacity: 0;
+  }
+  #menu__toggle:checked + .menu__btn > span {
+    transform: rotate(45deg);
+  }
+  #menu__toggle:checked + .menu__btn > span::before {
+    top: 0;
+    transform: rotate(0deg);
+  }
+  #menu__toggle:checked + .menu__btn > span::after {
+    top: 0;
+    transform: rotate(90deg);
+  }
+  #menu__toggle:checked ~ .menu__box {
+    left: 0 !important;
+  }
+  .menu__btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .menu__btn > span,
+  .menu__btn > span::before,
+  .menu__btn > span::after {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #616161;
+    transition-duration: 0.25s;
+  }
+  .menu__btn > span::before {
+    content: "";
+    top: -8px;
+  }
+  .menu__btn > span::after {
+    content: "";
+    top: 8px;
+  }
+  .menu__box {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 300px;
+    height: 100%;
+    margin: 0;
+    padding: 80px 0;
+    list-style: none;
+    background-color: #eceff1;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    transition-duration: 0.25s;
+  }
+  .menu__item {
+    display: block;
+    padding: 12px 24px;
+    color: #333;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition-duration: 0.25s;
+  }
+  .menu__item:hover {
+    background-color: #cfd8dc;
+  }
+  .account-logo {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 40px;
+    font-size: 2rem;
+    
+  }
+  .account-logo:hover {
+    background: none;
+  }
+  .account-option {
+    display: none;
+    position: static;
+    border-radius: 20px;
+    background-color: #ffffff;
+    font-size: 1.3rem;
+   font-weight: 400;
+  }
+  .products {
+    margin-top: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    margin-left: 100px;
+  }
+  .products .cardclass {
+    width: 250px;
+    height: 350px;
+    justify-content: center;
+    align-items: center;
+  }
+  .products .cardclass button {
+    margin-left: 10px;
+  }
+
+  .products .cardclass img {
+    margin: unset;
+    align-self: center;
+    justify-self: center;
+  }
+  .products .cardclass p {
+    margin: unset;
+    align-self: center;
+    justify-self: center;
+  }
+}
+
+@media (max-width: 400px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  nav h3 {
+    margin-left: 250px;
+  }
+  section {
+    height: 550px;
+  }
+  .hero-title p {
+    width: 300px;
+    margin-left: 30px;
+  }
+  .hero-title h1 {
+    font-size: 1.8rem;
+    margin-top: 100px;
+    margin-left: 40px;
+  }
+  .hero-title span::after {
+    left: 50px;
+  }
+  .hero-title button {
+    margin-left: 40px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 150px 150px;
+    
+    gap: -11px;
+    position: relative;
+  }
+  .cardclass {
+    margin-left: -15px;
+  }
+
+  .cardclass {
+    width: 130px;
+    height: 280px;
+  }
+  .cardclass button {
+    left: 20px;
+  }
+  .description {
+    height: 500px;
+    flex-direction: column;
+    display: flex;
+    justify-content: space-around;
+    align-items: inherit;
+  }
+  .circle {
+    margin: unset;
+  }
+  .des-image {
+    margin-top: -200px;
+  }
+  .des-title {
+    margin-top: -200px;
+  }
+  .des-title h3 {
+    width: 280px;
+    font-size: 1rem;
+  }
+  .des-title p {
+    width: 300px;
+    font-size: 0.8rem;
+  }
+
+  .hero-image img {
+    width: 160px;
+
+    margin-left: 280px;
+  }
+}
+@media (max-width: 600px) {
+  .description {
+    margin-left: 0;
+  }
+  .products {
+    margin-left: 50px;
+  }
+}

@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+}
+.container {
+  padding: 80px 80px 0 80px;
+text-align: start;
+margin-bottom: 120px;
+
+}
+.container.cart {
+  padding: 45px 80px 0 80px;
+text-align: start;
+
+}
+
+.buy-btn {
+  padding: 15px 100px;
+  border: 2px solid rgb(66, 183, 255);
+  border-radius: 25px;
+  background-color: #f0f8ff;
+  color: rgb(45, 39, 39);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  transition: 0.15s background-color linear;
+  box-shadow: 3px 3px 6px #86808035;
+}
+.buy-btn:hover {
+  background-color: rgb(66, 183, 255);
+}
+.buy-btn:active {
+  transform: scale(0.9);
+}
+.buy-img img{
+    width:250px;
+    margin: 15px;
+    border-radius: 32px;
+    box-shadow: 3px 3px 6px #86808035;
+}
+.rating-card {
+  background-color: #f5f5f5;
+  
+  width: 20%;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.rating-card h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.rating-container {
+  display: flex;
+  justify-content: flex-end; /* Align items from right to left */
+  flex-direction: row-reverse; /* Reverse the order of items */
+}
+
+.rating-container input[type='radio'] {
+  display: none;
+}
+
+.rating-container label {
+  display: inline-block;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background-image: url('../../public/images/star.png'); /* Replace with your star image URL */
+  background-size: cover;
+  margin: 0 5px;
+  order: -1; /* Reverse the order of labels */
+}
+
+.rating-container label:hover,
+.rating-container label:hover ~ label {
+  background-image: url('../../public/images/star-filled.png'); /* Replace with your filled star image URL */
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 10px;
+      text-align: start;
+      
+      }
+    .container.order {
+        padding: 50px;
+      text-align: start;
+      padding-left: 1%;
+
+      
+      }
+    .buy-img img{
+        width:100px;
+        margin: 15px;
+        border-radius: 32px;
+        box-shadow: 3px 3px 6px #86808035;
+    }.rating-card {
+      background-color: #f5f5f5;
+      width: 80%;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+    }
+    
+}
