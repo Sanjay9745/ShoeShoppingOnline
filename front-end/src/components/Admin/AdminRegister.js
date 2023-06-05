@@ -24,7 +24,7 @@ function AdminRegister() {
       axios("/api/admin/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-            toast.success("Admin verified");
+           
           } else {
             navigate("/");
           }
