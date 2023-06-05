@@ -53,7 +53,7 @@ function ProductCard({ id, img, name, price, rating, numberOfReviews, stock }) {
         <img src={img} alt="product" />
         <p>{name}</p>
 
-        <h3>{price}</h3>
+        <h3>${price}</h3>
         <div className="product-rating">
           <StarRating rating={rating} />
           <p>{numberOfReviews} Reviews</p>

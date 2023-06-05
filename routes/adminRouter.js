@@ -128,29 +128,29 @@ router.post("/add-product",adminCheck, async (req, res) => {
   }
 });
 
-router.post("/demo-add", (req, res) => {
-  const newProduct = new Product({
-    name: "hello",
-    price: 20,
-    img: "http://res.cloudinary.com/dslu5n3wq/image/upload/v1685720694/pvijpfnx5...",
-    img2: "http://res.cloudinary.com/dslu5n3wq/image/upload/v1685720696/xl0gpacdc...",
-    img3: "http://res.cloudinary.com/dslu5n3wq/image/upload/v1685720698/sckzykokc...",
-    stock: 20,
-    rating: 0,
-    desc: "hello",
-  });
+// router.post("/demo-add", (req, res) => {
+//   const newProduct = new Product({
+//     name: "Puma Mercedes",
+//     price: 20,
+//     img: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_1050,h_1050/global/306502/01/sv01/fnd/IND/fmt/png/Mercedes-AMG-Petronas-Drift-Cat-8-Unisex-Motorsport-Shoes",
+//     img2: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/306502/01/fnd/IND/fmt/png/Mercedes-AMG-Petronas-Drift-Cat-8-Unisex-Motorsport-Shoes",
+//     img3: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/306502/01/fnd/IND/fmt/png/Mercedes-AMG-Petronas-Drift-Cat-8-Unisex-Motorsport-Shoes",
+//     stock: 25,
+//     rating: 4,
+//     desc: "PUMA and Mercedes AMG Petronas Motorsport team up to bring you an all-new take on the original",
+//   });
 
-  newProduct
-    .save()
-    .then(() => {
+//   newProduct
+//     .save()
+//     .then(() => {
     
-      res.json({ message: "success" });
-    })
-    .catch((error) => {
-      console.error("Error saving product:", error);
-      res.status(500).json({ message: "Internal server error" });
-    });
-});
+//       res.json({ message: "success" });
+//     })
+//     .catch((error) => {
+//       console.error("Error saving product:", error);
+//       res.status(500).json({ message: "Internal server error" });
+//     });
+// });
 
 router.patch("/edit-product", adminCheck, (req, res) => {
   const { id, name, price, stock, desc, img, img2, img3 } = req.body;

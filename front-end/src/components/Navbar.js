@@ -63,7 +63,7 @@ function Navbar() {
 
           <ul className="menu__box">
             <li>
-              <Link className="menu__item" to="/">
+              <Link className="menu__item" to="/" >
                 Home
               </Link>
             </li>

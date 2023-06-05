@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function EditShipping() {
   const { id } = useParams();
   const [recipientName, setRecipientName] = useState('');
@@ -101,7 +102,7 @@ function EditShipping() {
         if (response.status === 200) {
          navigate("/all-shipping")
         } else {
-          console.log(response.data.message);
+          toast.error("something went wrong")
         }
       })
       .catch((error) => {
@@ -187,6 +188,7 @@ function EditShipping() {
             </div>
           </form>
         </div>
+        <ToastContainer/>
       </div>
     </>
   );

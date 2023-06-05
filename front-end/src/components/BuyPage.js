@@ -6,7 +6,8 @@ import "../style/buy-page.css";
 import RatingCard from "./RatingCard";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function BuyPage() {
   const [item, setItem] = useState(null);
   const [user,setUser] = useState(false)
@@ -21,10 +22,11 @@ function BuyPage() {
       .then((res) => {
         setItem(res.data);
       })
-      .catch((error) => {
-        console.log("Error fetching product:", error);
+      .catch(() => {
+        toast.error("Server Error");
+        navigate("/products")
       });
-  }, [id]);
+  }, [id, navigate]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -55,18 +57,23 @@ function BuyPage() {
                         console.log("Error while checking rating:", error);
                       });
                   }
+                }else{
+                  toast.warning("No orders found")
+                  navigate("/products")
                 }
               })
               .catch((error) => {
                 console.log("Error while fetching user orders:", error);
               });
+          }else{
+            setUser(false)
           }
         })
         .catch((error) => {
           console.log("Error while accessing protected API:", error);
         });
     }
-  }, [id, state]);
+  }, [id, navigate, state]);
 
   if (!item) {
     return <div>Loading...</div>;
@@ -86,8 +93,11 @@ function BuyPage() {
         .catch((error) => {
           console.log(error);
         });
+        dispatch(addToCart(item));
+      }else{
+      dispatch(addToCart(item));
+      navigate("/login")
     }
-    dispatch(addToCart(item));
   };
 
   return (
@@ -108,6 +118,7 @@ function BuyPage() {
         Buy Now
       </button>
       {state && <RatingCard productId={id} />}
+      <ToastContainer/>
     </div>
   );
 }

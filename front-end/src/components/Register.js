@@ -24,6 +24,11 @@ function Register() {
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
+          }else if(res.status===409){
+            toast.error("User Already Exist");
+          }else{
+            toast.error("Something Went Wrong")
+            
           }
         })
         .catch(() => {localStorage.removeItem("token");toast.error("Fake or Invalid Token");});

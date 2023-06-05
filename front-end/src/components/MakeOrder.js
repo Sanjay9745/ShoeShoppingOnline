@@ -9,7 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeAllItems } from "../redux/cartSlice";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function MakeOrder() {
   const dispatch = useDispatch();
   const headers = {
@@ -22,6 +23,7 @@ function MakeOrder() {
   const [isLoading, setIsLoading] = useState(true); // Add isLoading state
 
   useEffect(() => {
+    toast.info("Page Loading....",{ autoClose: 1000,})
     let token = localStorage.getItem("token");
     if (token) {
       axios("/api/protected", { headers })
@@ -131,6 +133,7 @@ function MakeOrder() {
           </Scrollbar>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

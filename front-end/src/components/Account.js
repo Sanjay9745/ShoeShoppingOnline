@@ -123,9 +123,11 @@ function Account() {
       });
   }
 
+
+  
   function handleVerify(e) {
     e.preventDefault();
-
+    toast.info("sending OTP")
     axios
       .get("/api/user/verify", { headers })
       .then((res) => {
@@ -139,6 +141,8 @@ function Account() {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 3000,
           });
+        }else{
+          toast.error("Something Went Wrong")
         }
       })
       .catch((e) => console.log(e));
@@ -165,9 +169,13 @@ function Account() {
       .then((res) => {
         if (res.status === 200) {
           navigate("/");
+        }else if(res.status===404){
+          toast.error("Incorrect OTP")
+        }else{
+          toast.error(res.data.error)
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>toast.error("Something Went Wrong"));
   }
 
   function updateProfile(e) {
@@ -179,6 +187,8 @@ function Account() {
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
+          }else{
+            toast.error(res.data.error)
           }
         })
         .catch((e) => console.log(e));

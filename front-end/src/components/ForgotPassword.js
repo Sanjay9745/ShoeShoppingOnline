@@ -21,6 +21,7 @@ function ForgotPassword() {
   const navigate = useNavigate();
 
   function handleSubmit() {
+  
     axios
       .post("/api/user/otp-verify", { otp: password, id: id })
       .then((res) => {
@@ -39,7 +40,7 @@ function ForgotPassword() {
 
   function handleVerify(e) {
     e.preventDefault();
-
+    toast.info("Sending OTP")
     axios
       .post("/api/user/send-otp", { id: id })
       .then((res) => {

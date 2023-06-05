@@ -22,6 +22,15 @@ function Orders() {
               .then((res) => {
                 if (res.status === 200) {
                   setOrder(res.data);
+                  const handlePageLoad = () => {
+                    window.history.replaceState(null, '', window.location.href);
+                  };
+              
+                  window.addEventListener('load', handlePageLoad);
+              
+                  return () => {
+                    window.removeEventListener('load', handlePageLoad);
+                  };
                 }
               })
               .catch(() => {
@@ -85,9 +94,6 @@ function Orders() {
   ))
 }
 
-
-
-   
    
   </tbody>
 </table>

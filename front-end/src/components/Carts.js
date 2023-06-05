@@ -5,22 +5,45 @@ import "../style/carts.css"
 import CartItem from '../components/CartItem';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 
 function Carts() {
   const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart);
-  
-useEffect(()=>{
-  if(cartItems.length===0){
-    navigate("/products")
-  }
-})
+  const [user,setUser] = useState(false)
+  useEffect(() => {
+ 
+    const headers = {
+      "Content-Type": "application/json",
+      "x-access-token": localStorage.getItem("token"),
+    };
+    let token = localStorage.getItem("token");
+    if (token) {
+      axios("/api/protected", { headers })
+        .then((res) => {
+          if (res.status === 200) {
+            setUser(true);
+          }
+        })
+        .catch(() => {
+          setUser(false)
+          localStorage.removeItem("token");
+        });
+    }
+  }, []);
+
     const totalPrice = cartItems.reduce((a, b) => a + b.quantity * b.price, 0); // sum of
    function orderNow(){
-    if(totalPrice!==0){
-      navigate("/make-order")
+    if(user){
+      if(totalPrice.length!==0){
+        navigate("/make-order")
+      }else{
+        navigate("/products")
+      }
+    }else{
+      navigate("/login")
     }
    }
   return (

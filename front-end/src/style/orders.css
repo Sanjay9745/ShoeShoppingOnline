@@ -79,4 +79,8 @@ table {
       text-transform: uppercase;
       font-weight: normal;
     }
+    .search input {
+      width: 180px;
+      margin-left: -20px;
+  }
   }

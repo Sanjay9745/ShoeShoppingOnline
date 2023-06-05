@@ -30,7 +30,7 @@ oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN})
       to,
       subject,
       text,
-      html:`<h1>${html}</h1>`,
+      html:`<h3>${html}</h3>`,
     };
 
     const result = await transport.sendMail(mailOptions);

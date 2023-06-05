@@ -4,6 +4,10 @@ import { Scrollbar } from "react-scrollbars-custom";
 import "../style/carts.css";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 function AllShipping() {
   const [data, setData] = useState([]);
@@ -60,12 +64,28 @@ function AllShipping() {
               navigate("/add-shipping")
             }
           } else {
-            throw new Error('Failed to fetch shipping addresses');
+            toast.error("Something Went Wrong")
           }
         })
         .catch(() => navigate('/account'));
     }
   }, [data, headers, navigate, user]);
+  function handleDeleteConfirmation(id) {
+    confirmAlert({
+      title: "Confirm Account Deletion",
+      message: "Are you sure you want to delete the account?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick:  handleRemove(id),
+        },
+        {
+          label: "No",
+          onClick: () => console.log("Account deletion canceled"),
+        },
+      ],
+    });
+  }
 
   function handleRemove(id) {
     axios.delete(`/api/remove-shipping/${id}`, { headers })
@@ -74,7 +94,7 @@ function AllShipping() {
           // Remove the deleted shipping address from the state
           setData(data.filter((address) => address._id !== id));
         } else {
-          throw new Error('Failed to delete shipping address');
+          toast.error("Something went wrong")
         }
       })
       .catch((error) => {
@@ -104,7 +124,7 @@ function AllShipping() {
                     <div>
                       <button className="btn order" onClick={() => navigate(`/edit-shipping/${address._id}`)}>Edit</button>
                     </div>
-                    <div className="item-icon" onClick={() => handleRemove(address._id)}>
+                    <div className="item-icon" onClick={() => handleDeleteConfirmation(address._id)}>
                       <MdDelete />
                     </div>
                   </div>
@@ -115,6 +135,7 @@ function AllShipping() {
           </Scrollbar>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

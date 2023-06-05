@@ -190,27 +190,19 @@ position: relative;
   top: -50px;
   transition: .15s transform linear;
 }
-.cardclass img{
-  margin-top: 10px;
-  width:150px;
-  height:max-content
+.cardclass span{
+  justify-self: center;
 }
-.cardclass p {
-  margin-left: 25px;
-  margin-top: 0;
-}
+
 .cardclass h3{
    text-align: center;
-  margin-top: 0px;
+  margin: 0px;
 }
 .card1 img{
   transform:rotate(-20deg);
- 
+ width: 110px;
 }
-.card2 img,.card3 img,.card4 img{
-  transform:rotate(-20deg) scaleX(-1);
- 
-}
+
 .cardclass button{
 
   padding: 10px 20px;
@@ -221,6 +213,7 @@ position: relative;
   font-family: 'Poppins',sans-serif;
   font-weight: 500;
   transition:0.15s background-color linear;
+  margin-bottom: 10px;
 }
 .cardclass button:hover{
 
@@ -357,9 +350,14 @@ align-items:center;
 }
 
 .products .cardclass img, .products .cardclass p,.product-rating{
-margin:unset;
+margin:0;
 align-self: center;
 justify-self: center;
+width: 110px;
+}
+.product-rating {
+  margin-left: 53px;
+  width: 120px;
 }
 .product-rating p{
   font-size: .9rem;

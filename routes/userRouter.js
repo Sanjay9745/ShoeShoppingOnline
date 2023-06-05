@@ -685,20 +685,27 @@ router.post("/order-now", checkLogin, (req, res) => {
     user.cartItems = [];
 
     user.save().then((result) => {
-      res.status(200).json({ message: "Order Confirmed" });
+      console.log(result);
       sendMail(
         result.email,
         "New Order",
         `Your Order Id is+${result.orders._id}`,
-        "We Contact And Inform you about the delivery day"
+        "Your order has been  Placed Successfully.We will inform you About the Delivery Update"
       ); //send confirmation email to user.
+      res.status(200).json({ message: "Order Confirmed" });
+      
     });
   });
 });
 
 router.get("/user/orders",checkLogin,(req,res)=>{
   User.findById(req.user.id).then((user)=>{
-    res.status(200).json(user.orders);
+    if(user.orders.length!==0){
+
+      res.status(200).json(user.orders);
+    }else{
+      res.status(400).json({message:"no order found"})
+    }
   })
 })
 module.exports = router;

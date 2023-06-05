@@ -1,8 +1,10 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from "react";
-import { Link } from "react-router-dom";
+
+import { useNavigate } from 'react-router-dom';
 
 function Hero() {
+  const navigate = useNavigate();
   return (
     <div>
       <section>
@@ -13,14 +15,11 @@ function Hero() {
           </h1>
           <span></span>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse fugiat
-            voluptatibus molestiae assumenda magni sapiente beatae delectus
-            dignissimos aspernatur quis?
+          Sole Haven: Your Gateway to Stylish Footwear for Every Occasion
           </p>
-          <Link href="/products">
-            {" "}
-            <button>Shop Now</button>
-          </Link>
+      
+            <button onClick={()=>navigate("/products")}>Shop Now</button>
+         
         </div >
         <div className="hero-image" >
           

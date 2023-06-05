@@ -122,6 +122,15 @@ function AdminSingleOrder() {
                     <strong>City:</strong> {orders.city}
                     <br />
                     <strong>State:</strong> {orders.state}
+                    <br />
+                    <strong>Country:</strong> {orders.country}
+                    <br />
+                    <strong>Phone Number:</strong> {orders.phoneNumber}
+                    <br />
+                    <strong>Pin Code:</strong> {orders.postalCode}
+                    {orders.apartmentNumber&&<>
+                      <br />
+                    <strong>Apartment Number:</strong> {orders.postalCode}</>}
                   </td>
                   <td>{item.name}</td>
                   <td>{item.quantity}</td>

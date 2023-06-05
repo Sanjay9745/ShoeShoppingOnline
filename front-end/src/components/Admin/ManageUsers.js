@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
 import "../../style/carts.css";
 import { MdDelete } from "react-icons/md";
-
+import { confirmAlert } from "react-confirm-alert";
 function ManageUsers() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -46,6 +46,24 @@ function ManageUsers() {
       });
   }, []);
 
+  const handleDeleteConfirmation = (id) => {
+    confirmAlert({
+      title: "Confirm Delete",
+      message: "Are you sure you want to Delete this user?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => handleRemove(id),
+        },
+        {
+          label: "No",
+          onClick: () => console.log("delete canceled"),
+        },
+      ],
+    });
+  };
+
+
   function handleRemove(id) {
     axios.delete(`/api/admin/user/${id}`, { headers })
       .then((res) => {
@@ -72,7 +90,7 @@ function ManageUsers() {
                     <p>Name:{user.name}</p>
                     <p>Email:{user.email}</p>
                     <div className="btn order" onClick={() => navigate(`/admin/single-user-order/${user._id}`)}>view Orders</div>
-                    <div className="item-icon order" onClick={() => handleRemove(user._id)}>
+                    <div className="item-icon order" onClick={() => handleDeleteConfirmation(user._id)}>
                       <MdDelete />
                     </div>
                   </div>

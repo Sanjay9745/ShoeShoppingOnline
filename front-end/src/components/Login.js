@@ -68,6 +68,12 @@ function Login() {
               autoClose: 2000,
             });
             navigate("/");
+          }else if(res.status===401){
+            toast.error("Incorrect Password")
+          }else if(res.status===409){
+            toast.error(res.data.message)
+          }else{
+            toast.error("Something Went Wrong")
           }
         })
         .catch((res) => {toast.error("Login Failed Please Check Your Email or password")} );

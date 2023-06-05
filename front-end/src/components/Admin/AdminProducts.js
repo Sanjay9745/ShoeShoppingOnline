@@ -56,7 +56,7 @@ function ProductCard({ id, img, name, price,setProducts }) {
         <div className="small-product">
         
             <img src={img} className="product-image" alt={name} />
-            <h1>{name}</h1>
+            <h3>{name}</h3>
             <p>{price}</p>
             <div className="btn" onClick={()=>navigate("/admin/product/"+id)}>Edit</div>
             <div className="item-icon" onClick={handleRemove}>

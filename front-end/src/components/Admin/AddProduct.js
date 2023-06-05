@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 function AddProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const headers = {
@@ -60,6 +61,13 @@ function AddProduct() {
       .then((response) => {
         toast.success("Product added")
         console.log(response.data);
+        setFile(null);
+        setFile2(null)
+        setFile3(null)
+        setName("")
+        setPrice("")
+        setStock("")
+        setDesc("")
       })
       .catch((error) => {
         // Handle error

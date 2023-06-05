@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import StarRating from "./StarRating";
 
 function HomeProduct() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function HomeProduct() {
 
   return (
     <>
-      <div className="cards">
+      <div className="cards" id="home-products">
         <h2>OUR POPULAR PRODUCT</h2>
 
         <div className="card">
@@ -32,6 +33,10 @@ function HomeProduct() {
               <img src={product.img} alt="" />
               <p>{product.name}</p>
               <h3>${product.price}</h3>
+              <span>
+
+              <StarRating rating={5} />
+              </span>
               <button onClick={() => navigate(`/buy/${product._id}`)}>
                 Buy Now
               </button>
