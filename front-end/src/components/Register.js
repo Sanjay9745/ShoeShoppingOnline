@@ -24,11 +24,6 @@ function Register() {
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
-          }else if(res.status===409){
-            toast.error("User Already Exist");
-          }else{
-            toast.error("Something Went Wrong")
-            
           }
         })
         .catch(() => {localStorage.removeItem("token");toast.error("Fake or Invalid Token");});
@@ -60,7 +55,6 @@ function Register() {
         password: password,
         cartItems: cartItems,
       });
-
       axios
         .post("/api/register", params, { headers })
 
@@ -73,8 +67,9 @@ function Register() {
               autoClose: 2000,
             });
           }
+   
         })
-        .catch((e) => console.log(e)); //console log the dat
+        .catch((e) => toast.error("User Already Exist")); //console log the dat
        
       if (showPassword) {
         setShowPassword(false); // Reset password visibility after form submission

@@ -37,7 +37,7 @@ function AdminSingleOrder() {
                 }
               })
               .catch(() => {
-                console.log("error 2");
+                navigate("/admin/all-orders")
               });
           }
         })
@@ -70,6 +70,7 @@ function AdminSingleOrder() {
         updatedOrders.status = selectedOption;
         updatedOrders.deliveryNumber = deliveryNumber;
         setOrders(updatedOrders);
+        toggleDropdown(orderId)
         console.log(res.data);
       });
   };
@@ -150,7 +151,7 @@ function AdminSingleOrder() {
                             value={deliveryNumber}
                             onChange={(e) => {
                               setDeliveryNumber(e.target.value);
-                              handleOptionChange(orders._id);
+                            
                             }}
                           />
                         </p>
@@ -160,7 +161,7 @@ function AdminSingleOrder() {
                           value={selectedOption}
                           onChange={(e) => {
                             setSelectedOption(e.target.value);
-                            handleOptionChange(orders._id);
+                           
                           }}
                         >
                           <option value="ordered">Ordered</option>
@@ -170,6 +171,7 @@ function AdminSingleOrder() {
                           </option>
                           <option value="delivered">Delivered</option>
                         </select>
+                        <button onClick={()=> handleOptionChange(orders._id)}>Save</button>
                       </>
                     )}
                   </td>

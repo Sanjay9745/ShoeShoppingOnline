@@ -88,12 +88,13 @@ function BuyPage() {
       axios
         .post("/api/add-cart", item, { headers })
         .then((res) => {
+          dispatch(addToCart(item));
           navigate("/carts")
         })
         .catch((error) => {
           console.log(error);
+          dispatch(addToCart(item));
         });
-        dispatch(addToCart(item));
       }else{
       dispatch(addToCart(item));
       navigate("/login")

@@ -142,10 +142,10 @@ function Account() {
             autoClose: 3000,
           });
         }else{
-          toast.error("Something Went Wrong")
+         
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>  toast.error("Something Went Wrong"));
   }
 
   useEffect(() => {

@@ -12,13 +12,14 @@ const { sendMail } = require("./userAction");
 const { generateOTP } = require("./userAction");
 //Sign Up
 router.post("/register", async (req, res) => {
+
   const { name, email, password, cartItems } = req.body;
   const validation = validateCredentials(email, password);
 
   if (validation) {
     try {
       const existingUser = await User.findOne({ email: email });
-
+    
       if (existingUser) {
         return res.status(409).json({ message: "User already exists" });
       } else {
@@ -685,7 +686,6 @@ router.post("/order-now", checkLogin, (req, res) => {
     user.cartItems = [];
 
     user.save().then((result) => {
-      console.log(result);
       sendMail(
         result.email,
         "New Order",
@@ -708,4 +708,31 @@ router.get("/user/orders",checkLogin,(req,res)=>{
     }
   })
 })
+
+router.delete("/order-cancel/:id", checkLogin, (req, res) => {
+  const orderId = req.params.id;
+
+  User.findById(req.user.id)
+    .then((user) => {
+      // Find the index of the order with the matching _id
+      const orderIndex = user.orders.findIndex((order) => order._id.toString() == orderId);
+
+      if (orderIndex === -1) {
+        // Return an error if the order is not found
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      // Remove the order from the array using splice()
+      user.orders.splice(orderIndex, 1);
+    
+      return user.save();
+    })
+    .then(() => {
+      res.status(200).json({ message: "Order canceled successfully" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "An error occurred while canceling the order" });
+    });
+});
+
 module.exports = router;
