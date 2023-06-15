@@ -88,10 +88,14 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 router.get("/protected", adminCheck, (req, res) => {
-  res.status(200).json({ auth: true });
+  try {
+    res.status(200).json({ user: req.user,userId:req.user.id });
+  } catch (e) {
+    res.status(401).json({ error: e ,userId:req.user.id});
+  }
 });
+
 
 router.post("/add-product",adminCheck, async (req, res) => {
   const file = req.files?.file;
@@ -258,7 +262,7 @@ router.post("/order", adminCheck, (req, res) => {
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      console.log(user.email);
+   
       res.status(200).json({ message: "Order status updated successfully" });
     })
     .catch((error) => {

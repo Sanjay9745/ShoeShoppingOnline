@@ -40,6 +40,7 @@ function AdminLogin() {
       axios
         .post("/api/admin/login", params, { headers })
         .then((res) => {
+          console.log(res.data.token);
           localStorage.setItem("adminToken", res.data.token);
           navigate("/admin");
           toast.success("Login successful", {

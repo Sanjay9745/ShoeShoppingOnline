@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StarRating from "./StarRating";
 
+import "../style/card.css"
 function HomeProduct() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -24,26 +24,37 @@ function HomeProduct() {
 
   return (
     <>
-      <div className="cards" id="home-products">
-        <h2>OUR POPULAR PRODUCT</h2>
+    <div className="our-product-title">
 
-        <div className="card">
-          {selectedProducts.map((product) => (
-            <div key={product._id} className="cardclass card1">
-              <img src={product.img} alt="" />
-              <p>{product.name}</p>
-              <h3>${product.price}</h3>
-              <span>
+     <h2 >OUR POPULAR PRODUCT</h2>
+    </div>
+     <div class="container home">
+     {selectedProducts.map((product) => (
+  <div class="card home" key={product._id}>
+    <div class="imgBx">
+      <img src={product.img}  alt="card"/>
+    </div>
+    <div class="contentBx">
+      <h2>{product.name}</h2>
+      <div class="size">
+        <h3>Price : ${product.price}</h3>
+        
 
-              <StarRating rating={5} />
-              </span>
-              <button onClick={() => navigate(`/buy/${product._id}`)}>
-                Buy Now
-              </button>
-            </div>
-          ))}
-        </div>
       </div>
+      <div class="color">
+        <h3>Color :</h3>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <p onClick={() => navigate(`/buy/${product._id}`)}>Buy Now</p>
+    </div>
+  </div>
+
+))}
+
+</div>
     </>
   );
 }
