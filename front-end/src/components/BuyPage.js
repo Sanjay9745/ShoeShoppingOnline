@@ -22,12 +22,14 @@ function BuyPage() {
       .get(`/api/products/${id}`)
       .then((res) => {
         setItem(res.data);
+        setIsLoading(false)
       })
       .catch(() => {
         toast.error("Server Error");
         navigate("/products")
       });
   }, [id, navigate]);
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -52,7 +54,7 @@ function BuyPage() {
                       .get("/api/already-rated/" + id, { headers })
                       .then((ratingRes) => {
                         setState(ratingRes.data);
-                        setIsLoading(false)
+                       
                       })
                       .catch((error) => {
                         console.log("Error while checking rating:", error);
@@ -98,7 +100,7 @@ function BuyPage() {
         });
       }else{
       dispatch(addToCart(item));
-      navigate("/login")
+      navigate("/register")
     }
   };
 

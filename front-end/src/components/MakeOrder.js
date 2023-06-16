@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
@@ -25,11 +25,15 @@ function MakeOrder() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Add isLoading state
   const [isVerified, setIsVerified] = useState(false); // Add isLoading state
-  
+  useLayoutEffect(()=>{
+    let token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/")
+    }
+  })
   useEffect(() => {
     
-    let token = localStorage.getItem("token");
-    if (token) {
+
       axios("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
@@ -46,11 +50,9 @@ function MakeOrder() {
         })
         .catch(() => {
           localStorage.removeItem("token");
-          navigate("/login");
+          navigate("/register");
         });
-    } else {
-      navigate("/");
-    }
+    
   }, []);
 
   if(isVerified){
@@ -69,7 +71,7 @@ function MakeOrder() {
     .catch(() => navigate("/account"));
   }
 
-  
+
   const handleOrderConfirmation = (address) => {
     confirmAlert({
       title: "Confirm Order",
