@@ -95,7 +95,7 @@ function CartItem({ id, name, img, price, quantity }) {
     <>
       <div className="item">
         <img src={img} alt="product" onClick={()=>navigate("/buy/"+id)} />
-        <p>{name}</p>
+        <p className="product-name">{name}</p>
         <h3>{price}</h3>
         <span
           style={

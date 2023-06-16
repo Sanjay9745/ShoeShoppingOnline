@@ -11,26 +11,29 @@ function Navbar() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
   const [user, setUser] = useState(false);
-  const [cartCount,setCartCount] = useState("")
- 
+  const [cartCount, setCartCount] = useState("");
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     "Content-Type": "application/json",
     "x-access-token": localStorage.getItem("token"),
   };
   useEffect(() => {
-    setCartCount(cartItems.reduce((a, b) => a + b.quantity, 0))
+    setCartCount(cartItems.reduce((a, b) => a + b.quantity, 0));
     let token = localStorage.getItem("token");
     if (token) {
       axios("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-            setUser(true)
-          }else{
-            setUser(false)
+            setUser(true);
+          } else {
+            setUser(false);
           }
         })
-        .catch(() => {localStorage.removeItem("token");setUser(false)});
+        .catch(() => {
+          localStorage.removeItem("token");
+          setUser(false);
+        });
     }
   }, [cartItems, headers]);
 
@@ -63,7 +66,7 @@ function Navbar() {
 
           <ul className="menu__box">
             <li>
-              <Link className="menu__item" to="/" >
+              <Link className="menu__item" to="/">
                 Home
               </Link>
             </li>
@@ -77,30 +80,29 @@ function Navbar() {
             <li>
               <Link className="menu__item" to="/carts">
                 Cart{" "}
-                {
-                  cartCount!== 0&& <><span>{cartCount}</span></>}
+                {cartCount !== 0 && (
+                  <>
+                    <span>{cartCount}</span>
+                  </>
+                )}
               </Link>
             </li>
 
-            <li>
+          
+            {user?<>
+              <li>
               <Link className="menu__item" to="/orders">
-               Orders
-
+                Orders
               </Link>
             </li>
-            <li>
+              <li>
               <div
                 className="menu__item account-logo"
                 onClick={handleAccountClick}
               >
                 <CgProfile />
                 <div className="account-option">
-                  {!user ? (
-                    <>
-                      <p onClick={() => navigate("/login")}>Sign In</p>
-                      <p onClick={() => navigate("/register")}>Sign Up</p>
-                    </>
-                  ) : (
+                  {user && (
                     <>
                       <p onClick={() => navigate("/account")}>My Account</p>
                       <p onClick={handleLogOut}>Sign out</p>
@@ -109,6 +111,19 @@ function Navbar() {
                 </div>
               </div>
             </li>
+            </>:<>
+            <li>
+            <Link className="menu__item" to="/login">
+                Sign In
+              </Link>
+            </li>
+            <li>
+            <Link className="menu__item" to="/register">
+                Sign Up
+              </Link>
+            </li>
+            </>}
+           
           </ul>
         </div>
       </nav>

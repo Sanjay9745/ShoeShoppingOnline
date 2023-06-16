@@ -44,6 +44,10 @@ padding: 0 30px 30px 30px;
     cursor: pointer;
     font-size:2rem;
 }
+.item .product-name{
+  width:200px;
+  overflow: hidden;
+}
 hr{
     border: none; /* Remove the border */
     background-color: black;
@@ -111,7 +115,11 @@ hr{
     .item-icon{
         color: red;
         font-size: 1.5rem;
-    }.carts{
+    }.item .product-name{
+      width:100px;
+      overflow: hidden;
+    }
+    .carts{
         width: 80%;
         height: 500px;
 

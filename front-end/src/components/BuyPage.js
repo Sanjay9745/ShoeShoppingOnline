@@ -41,7 +41,7 @@ function BuyPage() {
         .get("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-            setUser(true)
+            setUser(true);
             axios
               .get("/api/user/orders", { headers })
               .then((ordersRes) => {
@@ -68,19 +68,17 @@ function BuyPage() {
               .catch((error) => {
                 console.log("Error while fetching user orders:", error);
               });
-          }else{
-            setUser(false)
           }
         })
         .catch((error) => {
           console.log("Error while accessing protected API:", error);
         });
+    }else{
+      setUser(false)
     }
   }, [id, navigate, state]);
 
-  if (isLoading) {
-    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
-  }
+ 
   const handleAddToCart = ({name, price, img }) => {
     const item = { id, name, price, img };
     if (user) {
@@ -104,6 +102,9 @@ function BuyPage() {
     }
   };
 
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+  }
   return (
     <div className="container">
       <h1>{item.name}</h1>
