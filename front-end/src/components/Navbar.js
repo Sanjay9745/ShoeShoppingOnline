@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CgProfile } from "react-icons/cg";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { removeAllItems } from "../redux/cartSlice";
@@ -12,6 +12,25 @@ function Navbar() {
   const cartItems = useSelector((state) => state.cart);
   const [user, setUser] = useState(false);
   const [cartCount, setCartCount] = useState("");
+  const navbarRef = useRef(null);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+
+  useEffect(() => {
+    // Function to handle click outside the navbar
+    const handleClickOutsideNavbar = (event) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+        setIsNavbarVisible(false);
+      }
+    };
+    console.log(isNavbarVisible);
+    // Add event listener to listen for click events on the document
+    document.addEventListener("click", handleClickOutsideNavbar);
+
+    // Cleanup by removing the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleClickOutsideNavbar);
+    };
+  }, [isNavbarVisible]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
@@ -54,12 +73,21 @@ function Navbar() {
     localStorage.removeItem("cart");
     navigate("/");
   }
+
   return (
     <div>
-      <nav>
+      <nav
+       
+      >
         <h3>Logo</h3>
         <div className="hamburger-menu">
-          <input id="menu__toggle" type="checkbox" />
+          <input
+            id="menu__toggle"
+            ref={navbarRef}
+            className={`${isNavbarVisible ? "visible" : "hidden"}`}
+            type="checkbox"
+            onClick={() => setIsNavbarVisible((prev) => !prev)}
+          />
           <label className="menu__btn" htmlFor="menu__toggle">
             <span></span>
           </label>
@@ -88,42 +116,44 @@ function Navbar() {
               </Link>
             </li>
 
-          
-            {user?<>
-              <li>
-              <Link className="menu__item" to="/orders">
-                Orders
-              </Link>
-            </li>
-              <li>
-              <div
-                className="menu__item account-logo"
-                onClick={handleAccountClick}
-              >
-                <CgProfile />
-                <div className="account-option">
-                  {user && (
-                    <>
-                      <p onClick={() => navigate("/account")}>My Account</p>
-                      <p onClick={handleLogOut}>Sign out</p>
-                    </>
-                  )}
-                </div>
-              </div>
-            </li>
-            </>:<>
-            <li>
-            <Link className="menu__item" to="/login">
-                Sign In
-              </Link>
-            </li>
-            <li>
-            <Link className="menu__item" to="/register">
-                Sign Up
-              </Link>
-            </li>
-            </>}
-           
+            {user ? (
+              <>
+                <li>
+                  <Link className="menu__item" to="/orders">
+                    Orders
+                  </Link>
+                </li>
+                <li>
+                  <div
+                    className="menu__item account-logo"
+                    onClick={handleAccountClick}
+                  >
+                    <CgProfile />
+                    <div className="account-option">
+                      {user && (
+                        <>
+                          <p onClick={() => navigate("/account")}>My Account</p>
+                          <p onClick={handleLogOut}>Sign out</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="not-authenticated">
+                  <Link className="menu__item" to="/login">
+                    Sign In
+                  </Link>
+                </li>
+                <li className="not-authenticated">
+                  <Link className="menu__item" to="/register">
+                    Sign Up
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>
