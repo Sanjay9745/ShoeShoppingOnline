@@ -1,8 +1,10 @@
+import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Loading from "./components/Loading";
+import ScrollToTop from "./components/ScrollToTop";
 import Hero from "./components/Hero";
 import HomeProduct from "./components/HomeProduct";
 import About from "./components/About";
-
-import { Routes, Route} from "react-router-dom";
 import Products from "./components/Products";
 import Carts from "./components/Carts";
 import BuyPage from "./components/BuyPage";
@@ -24,19 +26,13 @@ import AdminSingleOrder from "./components/Admin/AdminSingleOrder";
 import ViewUserOrders from "./components/Admin/ViewUserOrders";
 import OneOrder from "./components/Admin/OneOrder";
 import ForgotPassword from "./components/ForgotPassword";
-import { useEffect, useState } from "react";
-import Loading from "./components/Loading";
-import ScrollToTop from "./components/ScrollToTop";
-
-
-
 
 function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleLoad = () => {
-      setIsLoading(false); // Set isLoading to false when the page finishes loading
+      setIsLoading(false);
     };
 
     window.addEventListener("load", handleLoad);
@@ -48,83 +44,59 @@ function Router() {
 
   return (
     <>
-     {isLoading ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <Routes>
-        <Route element={<ScrollToTop />} /> 
-        <Route
-        exact
-          path="/"
-          element={
-            <>
-              <Hero />
-              <HomeProduct />
-              <About />
-            </>
-          }
-        />
-
-        <Route path="/products" element={<>
-        <Products/>
-        </>} />
-        <Route path="/carts" element={<>
-        <Carts/>
-        </>} />
-        <Route path="/buy/:id" element={<>
-        <BuyPage/>
-        </>} />
-        <Route path="/login" element={<>
-        <Login/>
-        </>} />
-        <Route path="/register" element={<>
-        <Register/>
-        </>} />
-        <Route path="/register" element={<>
-        <Register/>
-        </>} />
-        <Route path="/forgot-password/:id" element={<>
-        <ForgotPassword/>
-        </>} />
-        <Route path="/account" element={<>
-        <Account/>
-        </>} />
-        <Route path="/add-shipping" element={<>
-        <ShippingAddress/>
-        </>} />
-        <Route path="/all-shipping" element={<>
-        <AllShipping/>
-        </>} />
-        <Route path="/edit-shipping/:id" element={<>
-        <EditShipping/>
-        </>} />
-        <Route path="/make-order" element={<>
-        <MakeOrder/>
-        </>} />
-        <Route path="/orders" element={<>
-        <Orders/>
-        </>} />
-        <Route path="/admin" element={<><Admin/></>}/>
-          <Route path="/admin/add-product" element={<><AddProduct/></>}/>
-          <Route path="/admin/login" element={<><AdminLogin/></>}/>
-          <Route path="/admin/product/:id" element={<><AdminProductEdit/></>}/>
-          <Route path="/admin/register" element={<><AdminRegister/></>}/>
-          <Route path="/admin/manage-user" element={<><ManageUsers/></>}/>
-          
-          <Route path="/admin/single-user-order/:id" element={<><AdminSingleOrder/></>}/>
-          <Route path="/admin/all-orders" element={<><ViewUserOrders/></>}/>
-          <Route path="/admin/one-order/:userId/:orderId" element={<><OneOrder/></>}/>
-
-
-          <Route path="*" element={ <>
-              <Hero />
-              <HomeProduct />
-              <About />
-            </>}/>
-    
-         
-        
-      </Routes>
+          <Route element={<ScrollToTop />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
+                <HomeProduct />
+                <About />
+              </>
+            }
+          />
+          <Route path="/products" element={<Products />} />
+          <Route path="/carts" element={<Carts />} />
+          <Route path="/buy/:id" element={<BuyPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password/:id" element={<ForgotPassword />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/add-shipping" element={<ShippingAddress />} />
+          <Route path="/all-shipping" element={<AllShipping />} />
+          <Route path="/edit-shipping/:id" element={<EditShipping />} />
+          <Route path="/make-order" element={<MakeOrder />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/admin/*" element={<Admin />} />
+          <Route path="/admin/add-product" element={<AddProduct />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/product/:id" element={<AdminProductEdit />} />
+          <Route path="/admin/register" element={<AdminRegister />} />
+          <Route path="/admin/manage-user" element={<ManageUsers />} />
+          <Route
+            path="/admin/single-user-order/:id"
+            element={<AdminSingleOrder />}
+          />
+          <Route path="/admin/all-orders" element={<ViewUserOrders />} />
+          <Route
+            path="/admin/one-order/:userId/:orderId"
+            element={<OneOrder />}
+          />
+          <Route
+            path="*"
+            element={
+              <>
+                <Hero />
+                <HomeProduct />
+                <About />
+              </>
+            }
+          />
+        </Routes>
       )}
     </>
   );
