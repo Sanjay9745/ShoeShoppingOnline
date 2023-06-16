@@ -8,11 +8,12 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "./Loading";
 function BuyPage() {
   const [item, setItem] = useState(null);
   const [user,setUser] = useState(false)
   const [state, setState] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ function BuyPage() {
                       .get("/api/already-rated/" + id, { headers })
                       .then((ratingRes) => {
                         setState(ratingRes.data);
-                        console.log(state);
+                        setIsLoading(false)
                       })
                       .catch((error) => {
                         console.log("Error while checking rating:", error);
@@ -75,8 +76,8 @@ function BuyPage() {
     }
   }, [id, navigate, state]);
 
-  if (!item) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
   }
   const handleAddToCart = ({name, price, img }) => {
     const item = { id, name, price, img };

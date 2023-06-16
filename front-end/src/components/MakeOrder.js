@@ -9,8 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeAllItems } from "../redux/cartSlice";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "./Loading";
+
+
 function MakeOrder() {
   const dispatch = useDispatch();
   const headers = {
@@ -21,9 +24,10 @@ function MakeOrder() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Add isLoading state
-
+  const [isVerified, setIsVerified] = useState(false); // Add isLoading state
+  
   useEffect(() => {
-    toast.info("Page Loading....",{ autoClose: 1000,})
+    
     let token = localStorage.getItem("token");
     if (token) {
       axios("/api/protected", { headers })
@@ -32,19 +36,7 @@ function MakeOrder() {
             axios("/api/user/is-verified", { headers })
               .then((res) => {
                 if (res.status === 200) {
-                  axios
-                    .get("/api/all-shipping", { headers })
-                    .then((res) => {
-                      if (res.status === 200) {
-                        if (res.data.length === 0) {
-                          navigate("/add-shipping");
-                        }
-                        setData(res.data);
-
-                        setIsLoading(false); // Set isLoading to false
-                      }
-                    })
-                    .catch(() => navigate("/account"));
+                 setIsVerified(true)
                 } else {
                   navigate("/account");
                 }
@@ -61,6 +53,23 @@ function MakeOrder() {
     }
   }, []);
 
+  if(isVerified){
+    axios
+    .get("/api/all-shipping", { headers })
+    .then((res) => {
+      if (res.status === 200) {
+        if (res.data.length === 0) {
+          navigate("/add-shipping");
+        }
+        setData(res.data);
+
+        setIsLoading(false); // Set isLoading to false
+      }
+    })
+    .catch(() => navigate("/account"));
+  }
+
+  
   const handleOrderConfirmation = (address) => {
     confirmAlert({
       title: "Confirm Order",
@@ -99,7 +108,7 @@ function MakeOrder() {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>; // Render a loading message or spinner while isLoading is true
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
   }
 
   return (

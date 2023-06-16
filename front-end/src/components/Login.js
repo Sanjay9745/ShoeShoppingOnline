@@ -9,7 +9,9 @@ import { addAllItems } from "../redux/cartSlice";
 import { validate } from "./validateLogin";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loading from "./Loading";
 function Login() {
+  const [isLoading, setIsLoading] = useState(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const dispatch = useDispatch();
   const headers = {
@@ -28,7 +30,12 @@ function Login() {
             navigate("/");
           }
         })
-        .catch((res) => {localStorage.removeItem("token");toast.error("Fake Token")});
+        .catch((res) => {localStorage.removeItem("token");
+        setIsLoading(false);
+        toast.error("Fake Token");
+      });
+    }else{
+      setIsLoading(false);
     }
   }, [navigate, headers]);
   const [email, setEmail] = useState("");
@@ -90,6 +97,10 @@ function ForgotPassword(){
 const handleTogglePassword = () => {
   setShowPassword(!showPassword);
 };
+
+if (isLoading) {
+  return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+}
   return (
     <>
       <div className="container">

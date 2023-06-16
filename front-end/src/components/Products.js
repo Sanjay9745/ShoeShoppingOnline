@@ -2,21 +2,29 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
 import "../style/orders.css"
+import Loading from "./Loading";
+import { useNavigate } from "react-router-dom";
 
 function Products() {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get("/api/products")
       .then((res) => {
         setData(res.data);
+        setIsLoading(false)
       })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
+      .catch(() => {
+        navigate("/")
       });
-  }, []);
+  }, [navigate]);
 
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+  }
   return (
     <>
       <div className="search">

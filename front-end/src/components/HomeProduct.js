@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../style/card.css"
+import Loading from "./Loading";
 function HomeProduct() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     axios
       .get("/api/products")
       .then((res) => {
         setData(res.data);
+        setIsLoading(false)
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -21,7 +23,9 @@ function HomeProduct() {
 
   const products = data.filter((product) => product.rating === 5);
   const selectedProducts = products.slice(0, 4);
-
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+  }
   return (
     <>
     <div className="our-product-title">

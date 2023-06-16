@@ -24,15 +24,35 @@ import AdminSingleOrder from "./components/Admin/AdminSingleOrder";
 import ViewUserOrders from "./components/Admin/ViewUserOrders";
 import OneOrder from "./components/Admin/OneOrder";
 import ForgotPassword from "./components/ForgotPassword";
+import { useEffect, useState } from "react";
+import Loading from "./components/Loading";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 
 
 function Router() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const handleLoad = () => {
+      setIsLoading(false); // Set isLoading to false when the page finishes loading
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => {
+      window.removeEventListener("load", handleLoad);
+    };
+  }, []);
 
   return (
     <>
-      <Routes>
+     {isLoading ? (
+        <Loading />
+      ) : (
+        <Routes>
+        <Route element={<ScrollToTop />} /> 
         <Route
         exact
           path="/"
@@ -105,6 +125,7 @@ function Router() {
          
         
       </Routes>
+      )}
     </>
   );
 }
