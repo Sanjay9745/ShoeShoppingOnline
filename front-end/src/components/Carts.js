@@ -4,12 +4,13 @@ import { useSelector } from "react-redux";
 import "../style/carts.css";
 import CartItem from "../components/CartItem";
 import { Scrollbar } from "react-scrollbars-custom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
 
 function Carts() {
   const navigate = useNavigate();
+  const location = useLocation();
   const cartItems = useSelector((state) => state.cart);
   const [user, setUser] = useState(false);
 useLayoutEffect(()=>{
@@ -46,6 +47,7 @@ useLayoutEffect(()=>{
         navigate("/products");
       }
     } else {
+      localStorage.setItem("redirectPath", location.pathname);
       navigate("/login");
     }
   }

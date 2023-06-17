@@ -26,15 +26,15 @@ function Login() {
       axios("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-          
             navigate("/");
           }
         })
-        .catch((res) => {localStorage.removeItem("token");
-        setIsLoading(false);
-        toast.error("Fake Token");
-      });
-    }else{
+        .catch((res) => {
+          localStorage.removeItem("token");
+          setIsLoading(false);
+          toast.error("Fake Token");
+        });
+    } else {
       setIsLoading(false);
     }
   }, [navigate, headers]);
@@ -43,8 +43,8 @@ function Login() {
 
   function handleSubmit(e) {
     e.preventDefault();
-   
-    if (validate( email, password)) {
+
+    if (validate(email, password)) {
       const params = JSON.stringify({
         //string or number or object or array or boolean or null or undefined. 	Can also be a function or other custom data
         email: email,
@@ -74,33 +74,48 @@ function Login() {
               position: toast.POSITION.TOP_RIGHT,
               autoClose: 2000,
             });
-            navigate("/");
-          }else if(res.status===401){
-            toast.error("Incorrect Password")
-          }else if(res.status===409){
-            toast.error(res.data.message)
-          }else{
-            toast.error("Something Went Wrong")
+            const redirectPath = localStorage.getItem("redirectPath");
+            if (redirectPath) {
+              localStorage.removeItem("redirectPath"); // Remove the stored redirect path
+              navigate(redirectPath);
+            } else {
+              navigate("/"); // If no redirect path is found, navigate to the default path
+            }
+          } else if (res.status === 401) {
+            toast.error("Incorrect Password");
+          } else if (res.status === 409) {
+            toast.error(res.data.message);
+          } else {
+            toast.error("Something Went Wrong");
           }
         })
-        .catch((res) => {toast.error("Login Failed Please Check Your Email or password")} );
-        //console log the data from the server
+        .catch((res) => {
+          toast.error("Login Failed Please Check Your Email or password");
+        });
+      //console log the data from the server
     }
   }
-function ForgotPassword(){
-  axios.get("/api/user-exist/"+email).then((res)=>{
-    if(res.status===200){
-      navigate("/forgot-password/"+res.data.id)
-    }
-  }).catch(e=>console.log(e))
-}
-const handleTogglePassword = () => {
-  setShowPassword(!showPassword);
-};
+  function ForgotPassword() {
+    axios
+      .get("/api/user-exist/" + email)
+      .then((res) => {
+        if (res.status === 200) {
+          navigate("/forgot-password/" + res.data.id);
+        }
+      })
+      .catch((e) => console.log(e));
+  }
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-if (isLoading) {
-  return <><Loading/></>; // Render a loading message or spinner while isLoading is true
-}
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    ); // Render a loading message or spinner while isLoading is true
+  }
   return (
     <>
       <div className="container">
@@ -118,26 +133,32 @@ if (isLoading) {
               onChange={(e) => setEmail(e.target.value)}
             />
             <div className="password">
-            <label htmlFor="password">Password:</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              value={password}
-              name="password"
-              placeholder="Enter Your Password"
-              required
-              autoComplete="false"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <span
-              type="button"
-              className="toggle-password-btn"
-              onClick={handleTogglePassword}
-            >
-              {showPassword ? <img src="/images/show.png" alt="" /> : <img src="/images/hide.png" alt="" />}
-            </span>
+              <label htmlFor="password">Password:</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                name="password"
+                placeholder="Enter Your Password"
+                required
+                autoComplete="false"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span
+                type="button"
+                className="toggle-password-btn"
+                onClick={handleTogglePassword}
+              >
+                {showPassword ? (
+                  <img src="/images/show.png" alt="" />
+                ) : (
+                  <img src="/images/hide.png" alt="" />
+                )}
+              </span>
             </div>
-            <p className="forgot" onClick={ForgotPassword}>Forgot Password</p>
+            <p className="forgot" onClick={ForgotPassword}>
+              Forgot Password
+            </p>
             <div>
               <button className="form-btn">Sign In</button>
             </div>

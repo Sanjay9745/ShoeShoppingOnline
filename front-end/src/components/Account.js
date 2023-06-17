@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { validate } from "./validate";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Loading from "./Loading";
 
 function Account() {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ function Account() {
   const [btn, setBtn] = useState("Send OTP");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [timer, setTimer] = useState(30);
-
+  const [isLoading, setIsLoading] = useState(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     "Content-Type": "application/json",
@@ -57,8 +58,9 @@ function Account() {
         } else {
           setVerified(false);
         }
+        setIsLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch(() => setIsLoading(false));
   }, [verified]);
 
   function handleDeleteConfirmation() {
@@ -123,11 +125,9 @@ function Account() {
       });
   }
 
-
-  
   function handleVerify(e) {
     e.preventDefault();
-    toast.info("sending OTP")
+    toast.info("sending OTP");
     axios
       .get("/api/user/verify", { headers })
       .then((res) => {
@@ -141,11 +141,10 @@ function Account() {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 3000,
           });
-        }else{
-         
+        } else {
         }
       })
-      .catch((e) =>  toast.error("Something Went Wrong"));
+      .catch((e) => toast.error("Something Went Wrong"));
   }
 
   useEffect(() => {
@@ -169,13 +168,13 @@ function Account() {
       .then((res) => {
         if (res.status === 200) {
           navigate("/");
-        }else if(res.status===404){
-          toast.error("Incorrect OTP")
-        }else{
-          toast.error(res.data.error)
+        } else if (res.status === 404) {
+          toast.error("Incorrect OTP");
+        } else {
+          toast.error(res.data.error);
         }
       })
-      .catch((e) =>toast.error("Something Went Wrong"));
+      .catch((e) => toast.error("Something Went Wrong"));
   }
 
   function updateProfile(e) {
@@ -187,14 +186,21 @@ function Account() {
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
-          }else{
-            toast.error(res.data.error)
+          } else {
+            toast.error(res.data.error);
           }
         })
         .catch((e) => console.log(e));
     }
   }
 
+  if (isLoading) {
+    return (
+      <>
+        <Loading />
+      </>
+    ); // Render a loading message or spinner while isLoading is true
+  }
   return (
     <>
       <div className="container">

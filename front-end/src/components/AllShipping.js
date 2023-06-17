@@ -8,9 +8,11 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Loading from "./Loading";
 
 function AllShipping() {
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     'Content-Type': 'application/json',
@@ -59,7 +61,7 @@ function AllShipping() {
           if (res.status === 200) {
 
             setData(res.data);
-           
+           setIsLoading(false)
             if(data.length===0){
               navigate("/add-shipping")
             }
@@ -101,7 +103,9 @@ function AllShipping() {
         console.error('Error:', error);
       });
   }
-  
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+  }
   return (
     <div>
       <div className="container">

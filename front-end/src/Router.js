@@ -1,5 +1,6 @@
-import React, {useLayoutEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useLayoutEffect, useState } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { animateScroll as scroll } from "react-scroll";
 import Loading from "./components/Loading";
 import ScrollToTop from "./components/ScrollToTop";
 import Hero from "./components/Hero";
@@ -29,18 +30,23 @@ import ForgotPassword from "./components/ForgotPassword";
 
 function Router() {
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
 
   useLayoutEffect(() => {
     const handleLoad = () => {
       setIsLoading(false);
     };
-  
+
     handleLoad(); // Call the handler immediately since we're already in a synchronous phase
-  
+
     return () => {
       // Clean up code if necessary
     };
   }, []);
+
+  useLayoutEffect(() => {
+    scroll.scrollToTop({ smooth: true }); // Scroll to top on route change with smooth animation
+  }, [location]);
 
   return (
     <>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/buy-page.css";
 import axios from "axios";
 
-const RatingCard = ({ productId }) => {
+const RatingCard = ({ productId ,setState}) => {
   const [rating, setRating] = useState(null);
 
   const handleRatingChange = (event) => {
@@ -30,6 +30,7 @@ const RatingCard = ({ productId }) => {
               .then((response) => {
                 if (response.status === 200) {
                     console.log("rated");
+                    setState(false)
                 }
               })
               .catch((error) => {

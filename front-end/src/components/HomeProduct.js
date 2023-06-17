@@ -28,24 +28,24 @@ function HomeProduct() {
   }
   return (
     <>
-    <div className="our-product-title">
+    <div classNameName="our-product-title">
 
      <h2 >OUR POPULAR PRODUCT</h2>
     </div>
-     <div class="container home">
+     <div className="container home">
      {selectedProducts.map((product) => (
-  <div class="card home" key={product._id}>
-    <div class="imgBx">
+  <div className="card home" key={product._id}>
+    <div className="imgBx">
       <img src={product.img}  alt="card"/>
     </div>
-    <div class="contentBx">
+    <div className="contentBx">
       <h2>{product.name}</h2>
-      <div class="size">
+      <div className="size">
         <h3>Price : ${product.price}</h3>
         
 
       </div>
-      <div class="color">
+      <div className="color">
         <h3>Color :</h3>
         <span></span>
         <span></span>

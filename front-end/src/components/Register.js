@@ -26,7 +26,10 @@ function Register() {
             navigate("/");
           }
         })
-        .catch(() => {localStorage.removeItem("token");toast.error("Fake or Invalid Token");});
+        .catch(() => {
+          localStorage.removeItem("token");
+          toast.error("Fake or Invalid Token");
+        });
     }
   }, [navigate, headers]);
 
@@ -61,16 +64,22 @@ function Register() {
         .then((res) => {
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
-            navigate("/");
+    
             toast.success("Sign Up Success", {
               position: toast.POSITION.TOP_RIGHT,
               autoClose: 2000,
             });
           }
-   
+          const redirectPath = localStorage.getItem("redirectPath");
+          if (redirectPath) {
+            localStorage.removeItem("redirectPath"); // Remove the stored redirect path
+            navigate(redirectPath);
+          } else {
+            navigate("/"); // If no redirect path is found, navigate to the default path
+          }
         })
         .catch((e) => toast.error("User Already Exist")); //console log the dat
-       
+
       if (showPassword) {
         setShowPassword(false); // Reset password visibility after form submission
       }
@@ -102,24 +111,28 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
             />
             <div className="password">
-            <label htmlFor="password">Password:</label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              value={password}
-              name="password"
-              placeholder="Enter Your Password"
-              required
-              autoComplete="false"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <span
-              type="button"
-              className="toggle-password-btn"
-              onClick={handleTogglePassword}
-            >
-              {showPassword ? <img src="/images/show.png" alt="" /> : <img src="/images/hide.png" alt="" />}
-            </span>
+              <label htmlFor="password">Password:</label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                name="password"
+                placeholder="Enter Your Password"
+                required
+                autoComplete="false"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span
+                type="button"
+                className="toggle-password-btn"
+                onClick={handleTogglePassword}
+              >
+                {showPassword ? (
+                  <img src="/images/show.png" alt="" />
+                ) : (
+                  <img src="/images/hide.png" alt="" />
+                )}
+              </span>
             </div>
             <div>
               <button className="form-btn">Sign Up</button>

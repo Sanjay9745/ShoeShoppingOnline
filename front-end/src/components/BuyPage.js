@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import StarRating from "./StarRating";
 import "../style/buy-page.css";
@@ -11,25 +11,26 @@ import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
 function BuyPage() {
   const [item, setItem] = useState(null);
-  const [user,setUser] = useState(false)
+  const [user, setUser] = useState(false);
   const [state, setState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   useEffect(() => {
     axios
       .get(`/api/products/${id}`)
       .then((res) => {
         setItem(res.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch(() => {
         toast.error("Server Error");
-        navigate("/products")
+        navigate("/products");
       });
   }, [id, navigate]);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -46,23 +47,30 @@ function BuyPage() {
               .get("/api/user/orders", { headers })
               .then((ordersRes) => {
                 if (ordersRes.status === 200) {
-                  const orderedProduct = ordersRes.data.find((order) => {
-                    return order.items.some((item) => item.productId === id);
-                  });
-                  if (orderedProduct) {
+                  const orders = ordersRes.data;
+                  const orderedProduct = orders.find((order) => {
+                    return (
+                      order.items.some((item) => item.productId === id)
+                      
+                      );
+                    });
+                    
+                  if (orderedProduct.status==="delivered") {
                     axios
                       .get("/api/already-rated/" + id, { headers })
                       .then((ratingRes) => {
-                        setState(ratingRes.data);
-                       
+                        if (ratingRes.status === 200) {
+                          setState(ratingRes.data);
+                         
+                        }
                       })
                       .catch((error) => {
                         console.log("Error while checking rating:", error);
                       });
                   }
-                }else{
-                  toast.warning("No orders found")
-                  navigate("/products")
+                } else {
+                  toast.warning("No orders found");
+                  navigate("/products");
                 }
               })
               .catch((error) => {
@@ -73,13 +81,12 @@ function BuyPage() {
         .catch((error) => {
           console.log("Error while accessing protected API:", error);
         });
-    }else{
-      setUser(false)
+    } else {
+      setUser(false);
     }
   }, [id, navigate, state]);
 
- 
-  const handleAddToCart = ({name, price, img }) => {
+  const handleAddToCart = ({ name, price, img }) => {
     const item = { id, name, price, img };
     if (user) {
       const headers = {
@@ -90,20 +97,25 @@ function BuyPage() {
         .post("/api/add-cart", item, { headers })
         .then((res) => {
           dispatch(addToCart(item));
-          navigate("/carts")
+          navigate("/carts");
         })
         .catch((error) => {
           console.log(error);
           dispatch(addToCart(item));
         });
-      }else{
+    } else {
       dispatch(addToCart(item));
-      navigate("/register")
+      localStorage.setItem("redirectPath", location.pathname);
+      navigate("/register");
     }
   };
 
   if (isLoading) {
-    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+    return (
+      <>
+        <Loading />
+      </>
+    ); // Render a loading message or spinner while isLoading is true
   }
   return (
     <div className="container">
@@ -119,11 +131,11 @@ function BuyPage() {
         <StarRating rating={item.rating} />
         <p>{item.numberOfReviews} Reviews</p>
       </div>
-      <button className="buy-btn" onClick={()=> handleAddToCart(item)}>
+      <button className="buy-btn" onClick={() => handleAddToCart(item)}>
         Buy Now
       </button>
-      {state && <RatingCard productId={id} />}
-      <ToastContainer/>
+      {state && <RatingCard productId={id} setState={setState} />}
+      <ToastContainer />
     </div>
   );
 }

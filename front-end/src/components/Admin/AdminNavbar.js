@@ -1,13 +1,35 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from "react-router-dom";
 
-import { CgProfile } from "react-icons/cg";
-
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function AdminNavbar() {
+  const navbarRef = useRef(null);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+
+  useEffect(() => {
+    // Function to handle click outside the navbar
+    const handleClickOutsideNavbar = (event) => {
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target) &&
+        !event.target.classList.contains("account-icon")
+      ) {
+        setIsNavbarVisible(false);
+      }
+    };
+
+    // Add event listener to listen for click events on the document
+    document.addEventListener("click", handleClickOutsideNavbar);
+
+    // Cleanup by removing the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleClickOutsideNavbar);
+    };
+  }, [isNavbarVisible]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     "Content-Type": "application/json",
@@ -24,23 +46,15 @@ function AdminNavbar() {
           if (res.status === 200) {
             let token = localStorage.getItem("adminToken");
             if (!token) {
-           navigate("/")
+              navigate("/");
             }
           }
         })
-        .catch(() =>localStorage.removeItem("adminToken"));
+        .catch(() => localStorage.removeItem("adminToken"));
     }
   }, [headers]);
 
-  const [state, setState] = useState(false);
-  function handleAccountClick() {
-    if (state) {
-      document.querySelector(".account-option").classList.add("active");
-    } else {
-      document.querySelector(".account-option").classList.remove("active");
-    }
-    setState((prev) => !prev);
-  }
+
   function handleLogOut() {
     localStorage.removeItem("adminToken");
     navigate("/");
@@ -49,8 +63,16 @@ function AdminNavbar() {
     <div>
       <nav>
         <h3>Admin</h3>
-        <div className="hamburger-menu">
-          <input id="menu__toggle" type="checkbox" />
+        <div
+          className="hamburger-menu"
+          onClick={() => setIsNavbarVisible((prev) => !prev)}
+        >
+          <input
+            id="menu__toggle"
+            type="checkbox"
+            ref={navbarRef}
+            className={`${isNavbarVisible ? "visible" : "hidden"}`}
+          />
           <label className="menu__btn" htmlFor="menu__toggle">
             <span></span>
           </label>
@@ -64,7 +86,7 @@ function AdminNavbar() {
 
             <li>
               <Link className="menu__item" to="/admin/add-product">
-               Add Products
+                Add Products
               </Link>
             </li>
 
@@ -81,16 +103,9 @@ function AdminNavbar() {
             </li>
 
             <li>
-              <div
-                className="menu__item account-logo"
-                onClick={handleAccountClick}
-              >
-                <CgProfile />
-                <div className="account-option">
-                  
-                      <p onClick={handleLogOut}>Sign out</p>
-                </div>
-              </div>
+              <Link className="menu__item" onClick={handleLogOut}>
+                Sign out
+              </Link>
             </li>
           </ul>
         </div>

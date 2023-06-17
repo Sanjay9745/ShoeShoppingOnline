@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { CgProfile } from "react-icons/cg";
-
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -61,15 +59,7 @@ function Navbar() {
   }, [cartItems, headers]);
 
   const navigate = useNavigate();
-  const [state, setState] = useState(false);
-  function handleAccountClick() {
-    if (state) {
-      document.querySelector(".account-option").classList.add("active");
-    } else {
-      document.querySelector(".account-option").classList.remove("active");
-    }
-    setState((prev) => !prev);
-  }
+
   function handleLogOut() {
     setUser(false);
     dispatch(removeAllItems());
@@ -82,13 +72,13 @@ function Navbar() {
     <div>
       <nav>
         <h3>Logo</h3>
-        <div className="hamburger-menu">
+        <div className="hamburger-menu"  onClick={() => setIsNavbarVisible((prev) => !prev)}>
           <input
             id="menu__toggle"
             ref={navbarRef}
             className={`${isNavbarVisible ? "visible" : "hidden"}`}
             type="checkbox"
-            onClick={() => setIsNavbarVisible((prev) => !prev)}
+           
           />
           <label className="menu__btn" htmlFor="menu__toggle">
             <span></span>
@@ -120,26 +110,13 @@ function Navbar() {
 
             {user ? (
               <>
-                <li>
-                  <Link className="menu__item" to="/orders">
-                    Orders
+                <li className="authenticated">
+                  <Link className="menu__item" to="/account">
+                    My Account
                   </Link>
                 </li>
-                <li className="account-icon">
-                  <div
-                    className="menu__item account-logo"
-                    onClick={handleAccountClick}
-                  >
-                    <CgProfile />
-                    <div className="account-option">
-                      {user && (
-                        <>
-                          <p onClick={() => navigate("/account")}>My Account</p>
-                          <p onClick={handleLogOut}>Sign out</p>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                <li className="authenticated">
+                 <Link className="menu__item" onClick={handleLogOut}>Sign Out</Link>
                 </li>
               </>
             ) : (

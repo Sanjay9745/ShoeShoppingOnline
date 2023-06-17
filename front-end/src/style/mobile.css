@@ -224,8 +224,12 @@
     background-color: #cfd8dc;
   }
 
-.not-authenticated{
+.not-authenticated,.authenticated{
   order: -1;
+ 
+}
+.authenticated p{
+  padding: 0;
 }
   .account-logo {
     display: flex;

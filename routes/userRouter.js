@@ -176,7 +176,7 @@ router.get("/already-rated/:id", checkLogin, (req, res) => {
   User.findById(req.user.id)
     .then((user) => {
       let existingProductIndex = user.ratedProducts.findIndex(
-        (item) => item.productId == productId
+        (item) => item.productId == id
       );
       if (existingProductIndex === -1) {
         res.status(200).json(true);
@@ -734,5 +734,6 @@ router.delete("/order-cancel/:id", checkLogin, (req, res) => {
       res.status(500).json({ error: "An error occurred while canceling the order" });
     });
 });
+
 
 module.exports = router;
