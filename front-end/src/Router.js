@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useLayoutEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loading from "./components/Loading";
 import ScrollToTop from "./components/ScrollToTop";
@@ -30,15 +30,15 @@ import ForgotPassword from "./components/ForgotPassword";
 function Router() {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleLoad = () => {
       setIsLoading(false);
     };
-
-    window.addEventListener("load", handleLoad);
-
+  
+    handleLoad(); // Call the handler immediately since we're already in a synchronous phase
+  
     return () => {
-      window.removeEventListener("load", handleLoad);
+      // Clean up code if necessary
     };
   }, []);
 

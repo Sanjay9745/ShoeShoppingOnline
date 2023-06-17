@@ -18,11 +18,15 @@ function Navbar() {
   useEffect(() => {
     // Function to handle click outside the navbar
     const handleClickOutsideNavbar = (event) => {
-      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target) &&
+        !event.target.classList.contains("account-icon")
+      ) {
         setIsNavbarVisible(false);
       }
     };
-    console.log(isNavbarVisible);
+
     // Add event listener to listen for click events on the document
     document.addEventListener("click", handleClickOutsideNavbar);
 
@@ -76,9 +80,7 @@ function Navbar() {
 
   return (
     <div>
-      <nav
-       
-      >
+      <nav>
         <h3>Logo</h3>
         <div className="hamburger-menu">
           <input
@@ -123,7 +125,7 @@ function Navbar() {
                     Orders
                   </Link>
                 </li>
-                <li>
+                <li className="account-icon">
                   <div
                     className="menu__item account-logo"
                     onClick={handleAccountClick}

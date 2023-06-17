@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.beeffd24.css",
-    "main.js": "/static/js/main.599628cc.js",
+    "main.js": "/static/js/main.9f3c53e9.js",
     "static/media/SL_043021_42650_02.jpg": "/static/media/SL_043021_42650_02.430c62baaa083afe3146.jpg",
     "static/media/star-filled.png": "/static/media/star-filled.fbc8e923dfa90ec8dc20.png",
     "index.html": "/index.html",
     "main.beeffd24.css.map": "/static/css/main.beeffd24.css.map",
-    "main.599628cc.js.map": "/static/js/main.599628cc.js.map"
+    "main.9f3c53e9.js.map": "/static/js/main.9f3c53e9.js.map"
   },
   "entrypoints": [
     "static/css/main.beeffd24.css",
-    "static/js/main.599628cc.js"
+    "static/js/main.9f3c53e9.js"
   ]
 }
