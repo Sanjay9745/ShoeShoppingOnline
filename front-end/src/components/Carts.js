@@ -4,15 +4,17 @@ import { useSelector } from "react-redux";
 import "../style/carts.css";
 import CartItem from "../components/CartItem";
 import { Scrollbar } from "react-scrollbars-custom";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
+import Loading from "./Loading";
 
 function Carts() {
   const navigate = useNavigate();
-  const location = useLocation();
+
   const cartItems = useSelector((state) => state.cart);
   const [user, setUser] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 useLayoutEffect(()=>{
   if(cartItems.length===0){
     navigate("/products")
@@ -29,6 +31,7 @@ useLayoutEffect(()=>{
         .then((res) => {
           if (res.status === 200) {
             setUser(true);
+            setIsLoading(false)
           }
         })
         .catch(() => {
@@ -47,9 +50,12 @@ useLayoutEffect(()=>{
         navigate("/products");
       }
     } else {
-      localStorage.setItem("redirectPath", location.pathname);
+      
       navigate("/login");
     }
+  }
+  if (isLoading) {
+    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
   }
   return (
     <>

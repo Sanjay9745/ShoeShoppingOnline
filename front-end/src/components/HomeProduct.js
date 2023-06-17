@@ -28,7 +28,7 @@ function HomeProduct() {
   }
   return (
     <>
-    <div classNameName="our-product-title">
+    <div className="our-product-title">
 
      <h2 >OUR POPULAR PRODUCT</h2>
     </div>

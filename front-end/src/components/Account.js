@@ -55,6 +55,7 @@ function Account() {
       .then((res) => {
         if (res.status === 200) {
           setVerified(true);
+         
         } else {
           setVerified(false);
         }
@@ -132,6 +133,7 @@ function Account() {
       .get("/api/user/verify", { headers })
       .then((res) => {
         if (res.status === 200) {
+    
           if (!isButtonDisabled) {
             setIsButtonDisabled(true);
             setTimer(30);
@@ -142,6 +144,7 @@ function Account() {
             autoClose: 3000,
           });
         } else {
+          toast.error("Something Went Wrong")
         }
       })
       .catch((e) => toast.error("Something Went Wrong"));
@@ -159,7 +162,7 @@ function Account() {
     } else if (timer === 0) {
       setIsButtonDisabled(false);
     }
-  }, [isButtonDisabled, timer]);
+  }, [isButtonDisabled]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -167,7 +170,13 @@ function Account() {
       .post("/api/user/otp", { otp: password }, { headers })
       .then((res) => {
         if (res.status === 200) {
-          navigate("/");
+          const redirectPath = localStorage.getItem("redirectPath");
+          if (redirectPath) {
+            localStorage.removeItem("redirectPath"); // Remove the stored redirect path
+            navigate(redirectPath);
+          }else{
+            navigate("/")
+          }
         } else if (res.status === 404) {
           toast.error("Incorrect OTP");
         } else {

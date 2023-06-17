@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
 import "../style/carts.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +25,7 @@ function MakeOrder() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Add isLoading state
   const [isVerified, setIsVerified] = useState(false); // Add isLoading state
+  const location = useLocation();
   useLayoutEffect(()=>{
     let token = localStorage.getItem("token");
     if (!token) {
@@ -42,6 +43,7 @@ function MakeOrder() {
                 if (res.status === 200) {
                  setIsVerified(true)
                 } else {
+                  localStorage.setItem("redirectPath", location.pathname);
                   navigate("/account");
                 }
               })
