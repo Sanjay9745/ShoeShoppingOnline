@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { removeAllItems } from "../redux/cartSlice";
 import { GiRunningShoe } from "react-icons/gi";
-
 function Navbar() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -35,16 +34,14 @@ function Navbar() {
     };
   }, [isNavbarVisible]);
 
+ 
   useEffect(() => {
     setCartCount(cartItems.reduce((a, b) => a + b.quantity, 0));
-  }, [cartItems]);
-
-  useEffect(() => {
-    let token = localStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
-      "x-access-token": token,
+      "x-access-token": localStorage.getItem("token"),
     };
+    let token = localStorage.getItem("token");
     if (token) {
       axios("/api/protected", { headers })
         .then((res) => {
@@ -58,10 +55,8 @@ function Navbar() {
           localStorage.removeItem("token");
           setUser(false);
         });
-    } else {
-      setUser(false);
     }
-  }, []);
+  }, [cartItems]);
 
   const navigate = useNavigate();
 
@@ -131,10 +126,7 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="authenticated">
-                  <Link
-                    className="menu__item nav-btn btn-danger"
-                    onClick={handleLogOut}
-                  >
+                  <Link className="menu__item nav-btn btn-danger" onClick={handleLogOut}>
                     Sign Out
                   </Link>
                 </li>
