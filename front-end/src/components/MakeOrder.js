@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
 import "../style/carts.css";
@@ -21,42 +21,52 @@ function MakeOrder() {
 
   const location = useLocation();
 
-  let token = localStorage.getItem("token");
-  useLayoutEffect(() => {
-    if (!token) {
-      navigate("/products");
-    }
-  });
   useEffect(() => {
+    let token = localStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
       "x-access-token": localStorage.getItem("token"),
     };
-
-    axios("/api/user/is-verified", { headers })
-      .then((res) => {
-        if (res.status === 200) {
-          axios
-            .get("/api/all-shipping", { headers })
-            .then((res) => {
-              if (res.status === 200) {
-                if (res.data.length === 0) {
-                  navigate("/add-shipping");
+    if (!token) {
+      navigate("/");
+    } else {
+      axios("/api/protected", { headers })
+        .then((res) => {
+          if (res.status === 200) {
+            axios("/api/user/is-verified", { headers })
+              .then((res) => {
+                if (res.status === 200) {
+                  axios
+                    .get("/api/all-shipping", { headers })
+                    .then((res) => {
+                      if (res.status === 200) {
+                        if (res.data.length === 0) {
+                          navigate("/add-shipping");
+                        }
+                        setData(res.data);
+                        setIsLoading(false);
+                      }
+                    })
+                    .catch(() => navigate("/account"));
+                } else {
+                  localStorage.setItem("redirectPath", location.pathname);
+                  navigate("/account");
                 }
-                setData(res.data);
-                setIsLoading(false);
-              }
-            })
-            .catch(() => navigate("/account"));
-        } else {
-          localStorage.setItem("redirectPath", location.pathname);
-          navigate("/account");
-        }
-      })
-      .catch(() =>{
-        localStorage.removeItem("token");
-        navigate("/register")
-      });
+              })
+              .catch(() => {
+                localStorage.setItem("redirectPath", location.pathname);
+                navigate("/account");
+              });
+          } else {
+            localStorage.removeItem("token");
+            navigate("/register");
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          navigate("/register");
+        });
+    }
   }, [location.pathname, navigate]);
 
   const handleOrderConfirmation = (address) => {

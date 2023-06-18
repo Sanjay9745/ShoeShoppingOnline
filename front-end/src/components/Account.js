@@ -1,4 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import "../style/form.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -20,36 +21,48 @@ function Account() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [timer, setTimer] = useState(30);
   const [isLoading, setIsLoading] = useState(true);
-
-  useLayoutEffect(() => {
-    let token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/register");
-    }
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const headers = {
+    "Content-Type": "application/json",
+    "x-access-token": localStorage.getItem("token"),
+  };
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
+    let token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    } else {
+      axios("/api/protected", { headers })
+        .then((res) => {
+         
+          if (res.status === 403 || res.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/");
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          navigate("/");
+        });
+    }
+  }, [ navigate]);
+
+  useEffect(() => {
     axios
       .get("/api/user/is-verified", { headers })
       .then((res) => {
         if (res.status === 200) {
           setVerified(true);
+         
         } else {
           setVerified(false);
         }
         setIsLoading(false);
       })
-      .catch(() => {
-        localStorage.removeItem("token");
-        navigate("/register");
-      });
-  }, [navigate]);
+      .catch(() => setIsLoading(false));
+  }, [verified]);
 
   function handleDeleteConfirmation() {
     confirmAlert({
@@ -69,10 +82,6 @@ function Account() {
   }
 
   function handleDelete() {
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
     let token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
@@ -87,7 +96,8 @@ function Account() {
             if (confirmDelete) {
               axios
                 .delete("/api/user", { headers })
-                .then(() => {
+                .then((res) => {
+                 
                   dispatch(removeAllItems());
                   localStorage.removeItem("cart");
                   localStorage.removeItem("token");
@@ -96,7 +106,6 @@ function Account() {
                 })
                 .catch((e) => {
                   console.log(e);
-                  localStorage.removeItem("token");
                   reject();
                 });
             } else {
@@ -118,16 +127,13 @@ function Account() {
   }
 
   function handleVerify(e) {
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
     e.preventDefault();
     toast.info("sending OTP");
     axios
       .get("/api/user/verify", { headers })
       .then((res) => {
         if (res.status === 200) {
+    
           if (!isButtonDisabled) {
             setIsButtonDisabled(true);
             setTimer(30);
@@ -138,10 +144,10 @@ function Account() {
             autoClose: 3000,
           });
         } else {
-          toast.error("Something Went Wrong");
+          toast.error("Something Went Wrong")
         }
       })
-      .catch(() => localStorage.removeItem("token"));
+      .catch((e) => toast.error("Something Went Wrong"));
   }
 
   useEffect(() => {
@@ -156,14 +162,10 @@ function Account() {
     } else if (timer === 0) {
       setIsButtonDisabled(false);
     }
-  }, [isButtonDisabled, timer]);
+  }, [isButtonDisabled]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
     axios
       .post("/api/user/otp", { otp: password }, { headers })
       .then((res) => {
@@ -172,8 +174,8 @@ function Account() {
           if (redirectPath) {
             localStorage.removeItem("redirectPath"); // Remove the stored redirect path
             navigate(redirectPath);
-          } else {
-            navigate("/");
+          }else{
+            navigate("/")
           }
         } else if (res.status === 404) {
           toast.error("Incorrect OTP");
@@ -187,16 +189,13 @@ function Account() {
   function updateProfile(e) {
     e.preventDefault();
     let email = "hello@gmail.com";
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
     if (validate(name, email, password)) {
       axios
         .patch("/api/user", { name: name, password: password }, { headers })
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
+          
           } else {
             toast.error(res.data.error);
           }

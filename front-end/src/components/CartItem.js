@@ -4,25 +4,38 @@ import { useDispatch } from "react-redux";
 import { addToCart, reduceQuantity, removeFromCart } from "../redux/cartSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Loading from "./Loading";
 
 function CartItem({ id, name, img, price, quantity }) {
   const [data, setData] = useState([]);
+  const [user, setUser] = useState(false);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     axios("/api/products")
       .then((res) => {
-        if (res.status === 200) {
-          setData(res.data);
-          setIsLoading(false);
-        }
+        setData(res.data);
       })
       .catch((error) => {
         console.log(error);
       });
+  }, []);
+
+  useEffect(() => {
+    const headers = {
+      "Content-Type": "application/json",
+      "x-access-token": localStorage.getItem("token"),
+    };
+    let token = localStorage.getItem("token");
+    if (token) {
+      axios("/api/protected", { headers })
+        .then((res) => {
+          if (res.status === 200) {
+            setUser(true);
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+        });
+    }
   }, []);
 
   const dispatch = useDispatch();
@@ -30,88 +43,58 @@ function CartItem({ id, name, img, price, quantity }) {
   const stock = items[0]?.stock;
 
   const handleRemoveItem = () => {
-    if (token) {
+    if (user) {
       const headers = {
         "Content-Type": "application/json",
-        "x-access-token": token,
+        "x-access-token": localStorage.getItem("token"),
       };
       axios
         .post("/api/remove-cart", { id: id }, { headers })
-        .then((res) => {
-          if (res.status === 200) {
-            dispatch(removeFromCart(id));
-          } else {
-            dispatch(removeFromCart(id));
-          }
-        })
+        .then((res) => {})
         .catch((error) => {
           console.log(error);
-          dispatch(removeFromCart(id));
         });
-    } else {
-      dispatch(removeFromCart(id));
     }
+    dispatch(removeFromCart(id));
   };
 
   const handleAddToCart = () => {
     const item = { id, name, price, img };
-    if (token) {
+    if (user) {
       const headers = {
         "Content-Type": "application/json",
-        "x-access-token": token,
+        "x-access-token": localStorage.getItem("token"),
       };
       axios
         .post("/api/add-cart", item, { headers })
-        .then((res) => {
-          if (res.status === 200) {
-            dispatch(addToCart(item));
-          } else {
-            dispatch(addToCart(item));
-          }
-        })
-        .catch(() => {
-          dispatch(addToCart(item));
+        .then((res) => {})
+        .catch((error) => {
+          console.log(error);
         });
-    } else {
-      dispatch(addToCart(item));
     }
+    dispatch(addToCart(item));
   };
 
   const handleReduceQuantity = () => {
-    if (token) {
+    if (user) {
       const headers = {
         "Content-Type": "application/json",
-        "x-access-token": token,
+        "x-access-token": localStorage.getItem("token"),
       };
       axios
         .post("/api/reduce-cart", { id: id }, { headers })
-        .then((res) => {
-          if (res.status === 200) {
-            dispatch(reduceQuantity(id));
-          } else {
-            dispatch(reduceQuantity(id));
-          }
-        })
-        .catch(() => {
-          dispatch(reduceQuantity(id));
+        .then((res) => {})
+        .catch((error) => {
+          console.log(error);
         });
-    } else {
-      dispatch(reduceQuantity(id));
     }
+    dispatch(reduceQuantity(id));
   };
-
-  if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    ); // Render a loading message or spinner while isLoading is true
-  }
 
   return (
     <>
       <div className="item">
-        <img src={img} alt="product" onClick={() => navigate("/buy/" + id)} />
+        <img src={img} alt="product" onClick={()=>navigate("/buy/"+id)} />
         <p className="product-name">{name}</p>
         <h3>{price}</h3>
         <span
@@ -133,6 +116,7 @@ function CartItem({ id, name, img, price, quantity }) {
         >
           -
         </span>
+
         <div className="item-icon" onClick={handleRemoveItem}>
           <MdDelete />
         </div>
