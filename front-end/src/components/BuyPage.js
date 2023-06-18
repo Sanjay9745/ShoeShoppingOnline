@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
 function BuyPage() {
   const [item, setItem] = useState(null);
-  const [user, setUser] = useState(false);
+
   const [state, setState] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
@@ -42,7 +42,7 @@ function BuyPage() {
         .get("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-            setUser(true);
+          
             axios
               .get("/api/user/orders", { headers })
               .then((ordersRes) => {
@@ -81,14 +81,12 @@ function BuyPage() {
         .catch((error) => {
           console.log("Error while accessing protected API:", error);
         });
-    } else {
-      setUser(false);
     }
   }, [id, navigate, state]);
 
   const handleAddToCart = ({ name, price, img }) => {
     const item = { id, name, price, img };
-    if (user) {
+   
       const headers = {
         "Content-Type": "application/json",
         "x-access-token": localStorage.getItem("token"),
@@ -96,18 +94,25 @@ function BuyPage() {
       axios
         .post("/api/add-cart", item, { headers })
         .then((res) => {
-          dispatch(addToCart(item));
-          navigate("/carts");
+          if (res.status===200) {
+            
+            dispatch(addToCart(item));
+            navigate("/carts");
+          }else{
+            dispatch(addToCart(item));
+            localStorage.setItem("redirectPath", location.pathname);
+            navigate("/register");
+          }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
           dispatch(addToCart(item));
+          localStorage.setItem("redirectPath", location.pathname);
+          navigate("/register");
         });
-    } else {
-      dispatch(addToCart(item));
-      localStorage.setItem("redirectPath", location.pathname);
-      navigate("/register");
-    }
+
+      
+    
+    
   };
 
   if (isLoading) {
