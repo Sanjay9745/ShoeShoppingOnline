@@ -26,7 +26,7 @@ function Login() {
       axios("/api/protected", { headers })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/");
+            navigate("/", { replace: true });
           }
         })
         .catch((res) => {

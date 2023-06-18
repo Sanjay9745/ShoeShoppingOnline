@@ -34,13 +34,13 @@ function Navbar() {
     };
   }, [isNavbarVisible]);
 
- 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const headers = {
+    "Content-Type": "application/json",
+    "x-access-token": localStorage.getItem("token"),
+  };
   useEffect(() => {
     setCartCount(cartItems.reduce((a, b) => a + b.quantity, 0));
-    const headers = {
-      "Content-Type": "application/json",
-      "x-access-token": localStorage.getItem("token"),
-    };
     let token = localStorage.getItem("token");
     if (token) {
       axios("/api/protected", { headers })
@@ -56,7 +56,7 @@ function Navbar() {
           setUser(false);
         });
     }
-  }, [cartItems]);
+  }, [cartItems, headers]);
 
   const navigate = useNavigate();
 

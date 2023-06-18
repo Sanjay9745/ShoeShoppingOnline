@@ -116,7 +116,7 @@ router.get("/protected", checkLogin, (req, res) => {
 router.get("/products", (req, res) => {
   Product.find({})
     .then((result) => {
-      res.status(200).json(result); //returns all products in the database.  (not paginated)  (useful for debugging)
+      res.json(result); //returns all products in the database.  (not paginated)  (useful for debugging)
     })
     .catch((e) => res.json({ error: e }));
 }); // empty page for now.  Add a page for a user to sign up if needed.

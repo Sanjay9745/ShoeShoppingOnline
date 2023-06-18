@@ -97,12 +97,11 @@ function Account() {
               axios
                 .delete("/api/user", { headers })
                 .then((res) => {
-                 
                   dispatch(removeAllItems());
                   localStorage.removeItem("cart");
                   localStorage.removeItem("token");
                   resolve();
-                  navigate("/");
+                  navigate("/", { replace: true }); // Use { replace: true } to replace the current entry in the history stack
                 })
                 .catch((e) => {
                   console.log(e);
