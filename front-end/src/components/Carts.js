@@ -36,22 +36,27 @@ useLayoutEffect(()=>{
         })
         .catch(() => {
           setUser(false);
+          setIsLoading(false)
           localStorage.removeItem("token");
         });
+    }else{
+      setIsLoading(false)
     }
   }, []);
 
-  const totalPrice = cartItems.reduce((a, b) => a + b.quantity * b.price, 0); // sum of
+  const totalPrice = parseFloat(cartItems.reduce((a, b) => a + b.quantity * b.price, 0));
+
   function orderNow() {
+    
     if (user) {
-      if (totalPrice.length !== 0) {
+      if (totalPrice!== 0) {
         navigate("/make-order");
       } else {
         navigate("/products");
       }
     } else {
       
-      navigate("/login");
+      navigate("/register");
     }
   }
   if (isLoading) {
@@ -64,10 +69,10 @@ useLayoutEffect(()=>{
         <div className="carts">
           <Scrollbar>
             <div className="cart-items">
-              {cartItems.map((item) => {
+              {cartItems.map((item,index) => {
                 return (
                   <CartItem
-                    key={item.id}
+                    key={index}
                     id={item.id}
                     name={item.name}
                     price={item.price}

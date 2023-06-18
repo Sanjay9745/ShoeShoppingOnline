@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Loading from "./Loading";
-
+import {RiDeleteBin6Line} from "react-icons/ri"
 function Orders() {
   const [orders, setOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -152,16 +152,26 @@ function Orders() {
                   <td>{item.name}</td>
                   <td>{item.quantity}</td>
                   <td>{item.price}</td>
-                  <td>{order.status}</td>
+                  <td className={order.status==="delivered"&&"delivered"}>{order.status}</td>
+
                   <td>{orderedDateFormatted}</td>
                   <td>{deliveryDateFormatted}</td>
                   <td>
-                    <button
-                      className="btn"
-                      onClick={() => handleDeleteConfirmation(order._id)}
-                    >
-                      Cancel
-                    </button>
+                    {order.status === "delivered" ? (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteConfirmation(order._id)}
+                      >
+                        <RiDeleteBin6Line/>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => handleDeleteConfirmation(order._id)}
+                      >
+                        Cancel
+                      </button>
+                    )}
                   </td>
                 </tr>
               );

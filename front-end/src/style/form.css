@@ -2,8 +2,7 @@
     width: 60%;
     padding: 50px;
     border-radius: 20px;
-    box-shadow: 1px 3px 5px rgba(100, 97, 97, 0.578);
-
+    box-shadow : rgba(84, 80, 80, 0.17) 2px 3px 20px;
   }
 .form-signin{
     display: flex;
@@ -24,14 +23,14 @@ label{
 a{
   text-decoration: none;
   color:rgb(230, 71, 143);
-  font-size:1.2rem;
+  font-size:1.3rem;
 }
 input{
     outline: none;
     padding: 20px 40px;
     font-size: 16px;
     border: none;
-    box-shadow: 5px 3px 20px 0px rgba(84, 80, 80, 0.766);
+    box-shadow : rgba(84, 80, 80, 0.17) 2px 3px 20px;
     border-radius: 20px;
   }
 .form-btn {
@@ -46,7 +45,7 @@ input{
     font-weight: 500;
     font-size:1.2rem;
     transition: 0.15s background-color linear;
-    box-shadow: 3px 3px 6px #86808035;
+    box-shadow : rgba(29, 102, 170, 0.22) 3px 3px 20px;
   }
   .form-btn:hover {
     background-color: rgb(66, 183, 255);
@@ -80,6 +79,25 @@ input{
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+.suggested-password{
+  display: flex;
+  justify-content: flex-start;
+
+  align-items: center;
+  height : 30px;
+  max-height : 30px;
+}
+.suggested-password p{
+  color: rgb(32, 176, 32);
+  margin-right: 15px;
+}
+.suggested-password span{
+  font-size: 1.1rem;
+  transition: .15s linear;
+}
+.suggested-password span:hover{
+  opacity: .7;
 }
 
   @media (max-width:600px){

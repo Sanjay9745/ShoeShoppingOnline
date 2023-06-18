@@ -10,6 +10,24 @@ function Products() {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+
   useEffect(() => {
     axios
       .get("/api/products")
@@ -27,10 +45,9 @@ function Products() {
   }
   return (
     <>
-      <div className="search">
-        
-        <input type="text" placeholder="Search" onChange={(e) => setSearch(e.target.value) } />
-      </div>
+      <div className={`search-bar ${isScrolled ? "scrolled" : ""}`}>
+      <input type="text" placeholder="Search" onChange={(e) => setSearch(e.target.value) } />
+    </div>
       <div className="products">
         {search.length > 0 &&
           data

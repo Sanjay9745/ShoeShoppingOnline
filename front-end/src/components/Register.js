@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import {MdContentCopy} from "react-icons/md"
 import { validate } from "./validate";
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordSuggestion, setPasswordSuggestion] = useState("");
+
   const navigate = useNavigate();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
@@ -64,12 +66,13 @@ function Register() {
         .then((res) => {
           if (res.status === 200) {
             localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
-    
+
             toast.success("Sign Up Success", {
               position: toast.POSITION.TOP_RIGHT,
               autoClose: 2000,
             });
           }
+
           const redirectPath = localStorage.getItem("redirectPath");
           if (redirectPath) {
             localStorage.removeItem("redirectPath"); // Remove the stored redirect path
@@ -86,6 +89,48 @@ function Register() {
     }
   }
 
+  //Password Suggestion
+  const generatePasswordSuggestion = () => {
+    const length = 15; // Length of the suggested password
+    const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+    const specialCharacters = "!@#$%^&*()";
+
+    let password = "";
+    let allCharacters = uppercaseLetters + lowercaseLetters + specialCharacters;
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * allCharacters.length);
+      password += allCharacters[randomIndex];
+    }
+
+    return password;
+  };
+
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    const hasUppercase = /[A-Z]/.test(newPassword);
+    const hasSpecialCharacter = /[!@#$%^&*()]/.test(newPassword);
+    const isLengthValid = newPassword.length >= 8;
+
+    if (!hasUppercase || !hasSpecialCharacter || !isLengthValid) {
+      const suggestion = generatePasswordSuggestion();
+      setPasswordSuggestion(suggestion);
+    } else {
+      setPasswordSuggestion("");
+    }
+
+    setPassword(newPassword);
+  };
+  //copy clipboard
+  const handleCopyPassword = (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(passwordSuggestion);
+    toast.success("Password copied to clipboard", {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 2000,
+    });
+  };
   return (
     <>
       <div className="container">
@@ -98,6 +143,7 @@ function Register() {
               name="name"
               placeholder="Enter Your Name"
               id="name"
+              autoFocus
               onChange={(e) => setName(e.target.value)}
             />
             <label htmlFor="email">Email:</label>
@@ -107,7 +153,6 @@ function Register() {
               id="email"
               placeholder="Enter Your Email"
               required
-              autoFocus
               onChange={(e) => setEmail(e.target.value)}
             />
             <div className="password">
@@ -120,7 +165,7 @@ function Register() {
                 placeholder="Enter Your Password"
                 required
                 autoComplete="false"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
               <span
                 type="button"
@@ -133,12 +178,21 @@ function Register() {
                   <img src="/images/hide.png" alt="" />
                 )}
               </span>
+              {passwordSuggestion && (
+                <div className="password-popup">
+                  <p>Your password is weak. We suggest using:</p>
+                  <div className="suggested-password">
+                    <p>{passwordSuggestion}</p>
+                    <span onClick={handleCopyPassword}><MdContentCopy/></span>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <button className="form-btn">Sign Up</button>
             </div>
             <div>
-              Go to <Link to="/login">Sign In</Link>
+              Go to <Link to="/login">Login</Link>
             </div>
           </form>
           <ToastContainer />

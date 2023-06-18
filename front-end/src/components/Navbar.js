@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { removeAllItems } from "../redux/cartSlice";
-
+import { GiRunningShoe } from "react-icons/gi";
 function Navbar() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -71,14 +71,19 @@ function Navbar() {
   return (
     <div>
       <nav>
-        <h3>Logo</h3>
-        <div className="hamburger-menu"  onClick={() => setIsNavbarVisible((prev) => !prev)}>
+        <Link to="/" className="nav-logo">
+          <GiRunningShoe />
+        </Link>
+
+        <div
+          className="hamburger-menu"
+          onClick={() => setIsNavbarVisible((prev) => !prev)}
+        >
           <input
             id="menu__toggle"
             ref={navbarRef}
             className={`${isNavbarVisible ? "visible" : "hidden"}`}
             type="checkbox"
-           
           />
           <label className="menu__btn" htmlFor="menu__toggle">
             <span></span>
@@ -111,24 +116,31 @@ function Navbar() {
             {user ? (
               <>
                 <li className="authenticated">
+                  <Link className="menu__item" to="/orders">
+                    Orders
+                  </Link>
+                </li>
+                <li className="authenticated">
                   <Link className="menu__item" to="/account">
                     My Account
                   </Link>
                 </li>
                 <li className="authenticated">
-                 <Link className="menu__item" onClick={handleLogOut}>Sign Out</Link>
+                  <Link className="menu__item nav-btn btn-danger" onClick={handleLogOut}>
+                    Sign Out
+                  </Link>
                 </li>
               </>
             ) : (
               <>
                 <li className="not-authenticated">
                   <Link className="menu__item" to="/login">
-                    Sign In
+                    Login
                   </Link>
                 </li>
-                <li className="not-authenticated">
-                  <Link className="menu__item" to="/register">
-                    Sign Up
+                <li className="not-authenticated sign-up">
+                  <Link className="menu__item sign-up" to="/register">
+                    <button className="nav-btn">Sign Up</button>
                   </Link>
                 </li>
               </>

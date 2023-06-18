@@ -39,9 +39,6 @@ function Router() {
 
     handleLoad(); // Call the handler immediately since we're already in a synchronous phase
 
-    return () => {
-      // Clean up code if necessary
-    };
   }, []);
 
   useLayoutEffect(() => {
