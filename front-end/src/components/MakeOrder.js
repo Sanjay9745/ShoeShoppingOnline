@@ -1,7 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
 import "../style/carts.css";
@@ -13,66 +11,53 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
 
-
 function MakeOrder() {
   const dispatch = useDispatch();
-  const headers = {
-    "Content-Type": "application/json",
-    "x-access-token": localStorage.getItem("token"),
-  };
+
   const cartItems = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add isLoading state
-  const [isVerified, setIsVerified] = useState(false); // Add isLoading state
+  const [isLoading, setIsLoading] = useState(true);
+
   const location = useLocation();
-  useLayoutEffect(()=>{
-    let token = localStorage.getItem("token");
+
+  let token = localStorage.getItem("token");
+  useLayoutEffect(() => {
     if (!token) {
-      navigate("/")
+      navigate("/products");
     }
-  })
+  });
   useEffect(() => {
-    
+    const headers = {
+      "Content-Type": "application/json",
+      "x-access-token": localStorage.getItem("token"),
+    };
 
-      axios("/api/protected", { headers })
-        .then((res) => {
-          if (res.status === 200) {
-            axios("/api/user/is-verified", { headers })
-              .then((res) => {
-                if (res.status === 200) {
-                 setIsVerified(true)
-                } else {
-                  localStorage.setItem("redirectPath", location.pathname);
-                  navigate("/account");
+    axios("/api/user/is-verified", { headers })
+      .then((res) => {
+        if (res.status === 200) {
+          axios
+            .get("/api/all-shipping", { headers })
+            .then((res) => {
+              if (res.status === 200) {
+                if (res.data.length === 0) {
+                  navigate("/add-shipping");
                 }
-              })
-              .catch(() => navigate("/account"));
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem("token");
-          navigate("/register");
-        });
-    
-  }, []);
-
-  if(isVerified){
-    axios
-    .get("/api/all-shipping", { headers })
-    .then((res) => {
-      if (res.status === 200) {
-        if (res.data.length === 0) {
-          navigate("/add-shipping");
+                setData(res.data);
+                setIsLoading(false);
+              }
+            })
+            .catch(() => navigate("/account"));
+        } else {
+          localStorage.setItem("redirectPath", location.pathname);
+          navigate("/account");
         }
-        setData(res.data);
-
-        setIsLoading(false); // Set isLoading to false
-      }
-    })
-    .catch(() => navigate("/account"));
-  }
-
+      })
+      .catch(() =>{
+        localStorage.removeItem("token");
+        navigate("/register")
+      });
+  }, [location.pathname, navigate]);
 
   const handleOrderConfirmation = (address) => {
     confirmAlert({
@@ -91,12 +76,36 @@ function MakeOrder() {
     });
   };
 
-  const orderNow = ({ _id, recipientName, streetAddress, phoneNumber, city, state, postalCode, country, apartmentNumber }) => {
+  const orderNow = ({
+    _id,
+    recipientName,
+    streetAddress,
+    phoneNumber,
+    city,
+    state,
+    postalCode,
+    country,
+    apartmentNumber,
+  }) => {
     if (cartItems.length !== 0) {
+      const headers = {
+        "Content-Type": "application/json",
+        "x-access-token": localStorage.getItem("token"),
+      };
       axios
         .post(
           "/api/order-now",
-          { shippingId: _id, recipientName, streetAddress, phoneNumber, city, state, postalCode, country, apartmentNumber },
+          {
+            shippingId: _id,
+            recipientName,
+            streetAddress,
+            phoneNumber,
+            city,
+            state,
+            postalCode,
+            country,
+            apartmentNumber,
+          },
           { headers }
         )
         .then((res) => {
@@ -112,7 +121,7 @@ function MakeOrder() {
   };
 
   if (isLoading) {
-    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+    return <Loading />;
   }
 
   return (
@@ -135,7 +144,10 @@ function MakeOrder() {
                     <p>Name: {address.recipientName}</p>
                     <p>Address: {address.streetAddress}</p>
                     <p>Phone: {address.phoneNumber}</p>
-                    <button className="btn order" onClick={() => handleOrderConfirmation(address)}>
+                    <button
+                      className="btn order"
+                      onClick={() => handleOrderConfirmation(address)}
+                    >
                       Order Now
                     </button>
                   </div>
@@ -146,7 +158,7 @@ function MakeOrder() {
           </Scrollbar>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }

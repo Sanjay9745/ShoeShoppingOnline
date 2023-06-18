@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Loading from "./Loading";
-import {RiDeleteBin6Line} from "react-icons/ri"
+import { RiDeleteBin6Line } from "react-icons/ri";
 function Orders() {
   const [orders, setOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,45 +13,32 @@ function Orders() {
   let token = localStorage.getItem("token");
   useLayoutEffect(() => {
     if (!token) {
-      navigate("/products");
+      navigate("/register");
     }
   });
   useEffect(() => {
-    let token = localStorage.getItem("token");
-
     const headers = {
       "Content-Type": "application/json",
       "x-access-token": token,
     };
     axios
-      .get("/api/protected", { headers })
+      .get("/api/user/orders", { headers })
       .then((res) => {
         if (res.status === 200) {
-          axios
-            .get("/api/user/orders", { headers })
-            .then((res) => {
-              if (res.status === 200) {
-                console.log(res.data);
-                if (res.data.length === 0) {
-                  navigate("/products");
-                }
-                setIsLoading(false);
-                setOrder(res.data);
-              }
-            })
-            .catch(() => {
-              console.log("error 2");
-              navigate("/products");
-            });
-        } else {
-          navigate("/products");
+          
+          if (res.data.length === 0) {
+            navigate("/products");
+          }
+          setIsLoading(false);
+          setOrder(res.data);
         }
       })
       .catch(() => {
-        console.log("error");
-        navigate("/products");
+        console.log("error 2");
+        localStorage.removeItem("token");
+        navigate("/register");
       });
-  }, [navigate]);
+  }, [navigate, token]);
 
   function handleDeleteConfirmation(id) {
     confirmAlert({
@@ -71,7 +58,7 @@ function Orders() {
   }
 
   function handleCancel(id) {
-    let token = localStorage.getItem("token");
+
     if (token) {
       const headers = {
         "Content-Type": "application/json",
@@ -86,6 +73,7 @@ function Orders() {
         })
         .catch((error) => {
           console.error("Error canceling order:", error);
+          navigate("/products");
         });
     }
   }
@@ -152,7 +140,9 @@ function Orders() {
                   <td>{item.name}</td>
                   <td>{item.quantity}</td>
                   <td>{item.price}</td>
-                  <td className={order.status==="delivered"&&"delivered"}>{order.status}</td>
+                  <td className={order.status === "delivered" && "delivered"}>
+                    {order.status}
+                  </td>
 
                   <td>{orderedDateFormatted}</td>
                   <td>{deliveryDateFormatted}</td>
@@ -162,7 +152,7 @@ function Orders() {
                         className="btn btn-danger"
                         onClick={() => handleDeleteConfirmation(order._id)}
                       >
-                        <RiDeleteBin6Line/>
+                        <RiDeleteBin6Line />
                       </button>
                     ) : (
                       <button

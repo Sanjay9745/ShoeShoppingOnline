@@ -18,6 +18,7 @@ function BuyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+
   useEffect(() => {
     axios
       .get(`/api/products/${id}`)
@@ -38,81 +39,63 @@ function BuyPage() {
         "Content-Type": "application/json",
         "x-access-token": token,
       };
+
       axios
-        .get("/api/protected", { headers })
-        .then((res) => {
-          if (res.status === 200) {
-          
-            axios
-              .get("/api/user/orders", { headers })
-              .then((ordersRes) => {
-                if (ordersRes.status === 200) {
-                  const orders = ordersRes.data;
-                  const orderedProduct = orders.find((order) => {
-                    return (
-                      order.items.some((item) => item.productId === id)
-                      
-                      );
-                    });
-                    
-                  if (orderedProduct.status==="delivered") {
-                    axios
-                      .get("/api/already-rated/" + id, { headers })
-                      .then((ratingRes) => {
-                        if (ratingRes.status === 200) {
-                          setState(ratingRes.data);
-                         
-                        }
-                      })
-                      .catch((error) => {
-                        console.log("Error while checking rating:", error);
-                      });
+        .get("/api/user/orders", { headers })
+        .then((ordersRes) => {
+          if (ordersRes.status === 200) {
+            const orders = ordersRes.data;
+            const orderedProduct = orders.find((order) => {
+              return order.items.some((item) => item.productId === id);
+            });
+
+            if (orderedProduct.status === "delivered") {
+              axios
+                .get("/api/already-rated/" + id, { headers })
+                .then((ratingRes) => {
+                  if (ratingRes.status === 200) {
+                    setState(ratingRes.data);
                   }
-                } else {
-                  toast.warning("No orders found");
-                  navigate("/products");
-                }
-              })
-              .catch((error) => {
-                console.log("Error while fetching user orders:", error);
-              });
+                })
+                .catch((error) => {
+                  localStorage.removeItem("token");
+                });
+            }
+          } else {
+            toast.warning("No orders found");
+            navigate("/products");
           }
         })
-        .catch((error) => {
-          console.log("Error while accessing protected API:", error);
+        .catch(() => {
+          localStorage.removeItem("token");
         });
     }
   }, [id, navigate, state]);
 
   const handleAddToCart = ({ name, price, img }) => {
     const item = { id, name, price, img };
-   
-      const headers = {
-        "Content-Type": "application/json",
-        "x-access-token": localStorage.getItem("token"),
-      };
-      axios
-        .post("/api/add-cart", item, { headers })
-        .then((res) => {
-          if (res.status===200) {
-            
-            dispatch(addToCart(item));
-            navigate("/carts");
-          }else{
-            dispatch(addToCart(item));
-            localStorage.setItem("redirectPath", location.pathname);
-            navigate("/register");
-          }
-        })
-        .catch(() => {
+
+    const headers = {
+      "Content-Type": "application/json",
+      "x-access-token": localStorage.getItem("token"),
+    };
+    axios
+      .post("/api/add-cart", item, { headers })
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch(addToCart(item));
+          navigate("/carts");
+        } else {
           dispatch(addToCart(item));
           localStorage.setItem("redirectPath", location.pathname);
           navigate("/register");
-        });
-
-      
-    
-    
+        }
+      })
+      .catch(() => {
+        dispatch(addToCart(item));
+        localStorage.setItem("redirectPath", location.pathname);
+        navigate("/register");
+      });
   };
 
   if (isLoading) {

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Scrollbar } from "react-scrollbars-custom";
-import "../style/carts.css";
 import { MdDelete } from "react-icons/md";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,65 +12,54 @@ import Loading from "./Loading";
 function AllShipping() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-access-token': localStorage.getItem('token'),
-  };
   const navigate = useNavigate();
-  const [user, setUser] = useState(false);
 
-  useEffect(() => {
-    let token = localStorage.getItem('token');
-    if (token) {
-      axios.get('/api/protected', { headers })
-        .then((res) => {
-          if (res.status === 200) {
-            setUser(true);
-          } else {
-            setUser(false);
-            navigate('/login');
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem('token');
-          navigate('/login');
-        });
-    } else {
-      navigate('/');
+  let token = localStorage.getItem("token");
+  useLayoutEffect(() => {
+    if (!token) {
+      navigate("/register");
     }
-  }, [navigate, headers]);
-
+  });
   useEffect(() => {
-    if (user) {
-      axios.get('/api/user/is-verified', { headers })
-        .then((res) => {
-          if (res.status === 401) {
-            navigate('/account');
-          }
-        })
-        .catch(() => navigate('/account'));
-    }
-  }, [headers, navigate, user]);
+    axios
+      .get("/api/user/is-verified", {
+        headers: { "x-access-token": localStorage.getItem("token") },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          axios
+            .get("/api/all-shipping", {
+              headers: {
+                "x-access-token": localStorage.getItem("token"),
+              },
+            })
+            .then((res) => {
+              if (res.status === 200) {
+                setData(res.data);
 
-  useEffect(() => {
-    if (user) {
-      axios.get('/api/all-shipping', { headers })
-        .then((res) => {
-          if (res.status === 200) {
+                if (res.data.length === 0) {
+                  navigate("/add-shipping");
+                }
+                setIsLoading(false);
+              } else {
+                toast.error("Something Went Wrong");
+                navigate("/carts");
+              }
+            })
+            .catch(() => {
+              localStorage.removeItem("token");
+              navigate("/register");
+            });
+        } else {
+          navigate("/account");
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        navigate("/register");
+      });
+  }, [navigate]);
 
-            setData(res.data);
-           setIsLoading(false)
-            if(data.length===0){
-              navigate("/add-shipping")
-            }
-          } else {
-            toast.error("Something Went Wrong")
-          }
-        })
-        .catch(() => navigate('/account'));
-    }
-  }, [data, headers, navigate, user]);
   function handleDeleteConfirmation(id) {
     confirmAlert({
       title: "Confirm Account Deletion",
@@ -79,7 +67,7 @@ function AllShipping() {
       buttons: [
         {
           label: "Yes",
-          onClick:  handleRemove(id),
+          onClick: () => handleRemove(id),
         },
         {
           label: "No",
@@ -90,22 +78,30 @@ function AllShipping() {
   }
 
   function handleRemove(id) {
-    axios.delete(`/api/remove-shipping/${id}`, { headers })
+    const headers = {
+      "Content-Type": "application/json",
+      "x-access-token": localStorage.getItem("token"),
+    };
+
+    axios
+      .delete(`/api/remove-shipping/${id}`, { headers })
       .then((res) => {
         if (res.status === 200) {
           // Remove the deleted shipping address from the state
           setData(data.filter((address) => address._id !== id));
         } else {
-          toast.error("Something went wrong")
+          toast.error("Something went wrong");
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }
+
   if (isLoading) {
-    return <><Loading/></>; // Render a loading message or spinner while isLoading is true
+    return <Loading />;
   }
+
   return (
     <div>
       <div className="container">
@@ -126,9 +122,19 @@ function AllShipping() {
                     <p>Name : {address.recipientName}</p>
                     <p>Address : {address.streetAddress}</p>
                     <div>
-                      <button className="btn order" onClick={() => navigate(`/edit-shipping/${address._id}`)}>Edit</button>
+                      <button
+                        className="btn order"
+                        onClick={() =>
+                          navigate(`/edit-shipping/${address._id}`)
+                        }
+                      >
+                        Edit
+                      </button>
                     </div>
-                    <div className="item-icon" onClick={() => handleDeleteConfirmation(address._id)}>
+                    <div
+                      className="item-icon"
+                      onClick={() => handleDeleteConfirmation(address._id)}
+                    >
                       <MdDelete />
                     </div>
                   </div>
@@ -139,7 +145,7 @@ function AllShipping() {
           </Scrollbar>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }

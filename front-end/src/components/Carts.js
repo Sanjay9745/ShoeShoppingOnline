@@ -55,7 +55,6 @@ useLayoutEffect(()=>{
         navigate("/products");
       }
     } else {
-      
       navigate("/register");
     }
   }

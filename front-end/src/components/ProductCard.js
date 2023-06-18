@@ -28,7 +28,8 @@ function ProductCard({ id, img, name, price, rating, numberOfReviews, stock }) {
         })
         .catch(() => localStorage.removeItem("token"));
     }
-  }, [navigate, headers]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ navigate]);
 
   const dispatch = useDispatch();
   const cartItem = cartItems.filter((item) => item.id === id);

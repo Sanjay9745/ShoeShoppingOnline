@@ -67,9 +67,11 @@ function ManageUsers() {
   function handleRemove(id) {
     axios.delete(`/api/admin/user/${id}`, { headers })
       .then((res) => {
-        console.log("user deleted");
-        // Update the user list by removing the deleted user
-        setData(data.filter(user => user._id !== id));
+        if(res.status===200){
+          console.log("user deleted");
+          // Update the user list by removing the deleted user
+          setData(data.filter(user => user._id !== id));
+        }
       
       })
       .catch((error) => {
@@ -80,7 +82,7 @@ function ManageUsers() {
   return (
     <div>
       <div className="container order">
-        <h1>Manage Products</h1>
+        <h1>Manage Users</h1>
         <div className="products-page">
           <Scrollbar>
             <div className="products-items order">
