@@ -18,7 +18,6 @@ function BuyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-
   useEffect(() => {
     axios
       .get(`/api/products/${id}`)
@@ -39,35 +38,43 @@ function BuyPage() {
         "Content-Type": "application/json",
         "x-access-token": token,
       };
-
       axios
-        .get("/api/user/orders", { headers })
-        .then((ordersRes) => {
-          if (ordersRes.status === 200) {
-            const orders = ordersRes.data;
-            const orderedProduct = orders.find((order) => {
-              return order.items.some((item) => item.productId === id);
-            });
+        .get("/api/protected", { headers })
+        .then((res) => {
+          if (res.status === 200) {
+            axios
+              .get("/api/user/orders", { headers })
+              .then((ordersRes) => {
+                if (ordersRes.status === 200) {
+                  const orders = ordersRes.data;
+                  const orderedProduct = orders.find((order) => {
+                    return order.items.some((item) => item.productId === id);
+                  });
 
-            if (orderedProduct.status === "delivered") {
-              axios
-                .get("/api/already-rated/" + id, { headers })
-                .then((ratingRes) => {
-                  if (ratingRes.status === 200) {
-                    setState(ratingRes.data);
+                  if (orderedProduct.status === "delivered") {
+                    axios
+                      .get("/api/already-rated/" + id, { headers })
+                      .then((ratingRes) => {
+                        if (ratingRes.status === 200) {
+                          setState(ratingRes.data);
+                        }
+                      })
+                      .catch((error) => {
+                        console.log("Error while checking rating:", error);
+                      });
                   }
-                })
-                .catch((error) => {
-                  localStorage.removeItem("token");
-                });
-            }
-          } else {
-            toast.warning("No orders found");
-            navigate("/products");
+                } else {
+                  toast.warning("No orders found");
+                  navigate("/products");
+                }
+              })
+              .catch((error) => {
+                console.log("Error while fetching user orders:", error);
+              });
           }
         })
-        .catch(() => {
-          localStorage.removeItem("token");
+        .catch((error) => {
+          console.log("Error while accessing protected API:", error);
         });
     }
   }, [id, navigate, state]);
