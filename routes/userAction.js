@@ -57,10 +57,7 @@ async function sendMail(to, subject, text, html) {
       </head>
       <body>
         <div class="container">
-          <div class="card">
-            <h3>Verify Your Account</h3><br>
-            <a ${html}><button>Verify</button></a>
-          </div>
+       ${html}
         </div>
       </body>
     </html>

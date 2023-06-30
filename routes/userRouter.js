@@ -556,7 +556,11 @@ router.get("/user/send-verify-code", checkLogin, async (req, res) => {
       updatedUser.email,
       "OTP Verification",
       `Verify Your Account`,
-      `href="${process.env.URL}/api/user/code-verify?code=${code}&uid=${req.user.id}"`
+      `
+      <div class="card">
+      <h3>Verify Your Account</h3><br>
+      <a href="${process.env.URL}/api/user/code-verify?code=${code}&uid=${req.user.id}"><button>Verify</button></a>
+    </div>`
     )
       .then(() => {
         res
