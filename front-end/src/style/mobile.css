@@ -351,8 +351,9 @@ padding: 5px 15px;
     font-size: 1rem;
   }
   .des-title p {
-    width: 300px;
+    width: 90%;
     font-size: 0.8rem;
+    padding-bottom: 30px;
   }
 
   .hero-image img {
