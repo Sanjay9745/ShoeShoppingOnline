@@ -57,10 +57,10 @@ function Footer() {
         <div className="follow footer-card">
             <h3>Follow us</h3>
             <ul>
-                <li><Link to="/"><img src="/images/icons8-facebook-f-50.png" alt="facebook" /></Link></li>
-                <li><a href="https://www.linkedin.com/in/sanjay-santhosh-31919026b/"><img src="/images/icons8-linkedin.svg" alt="linkedin" /></a></li>
-                <li><a href="https://www.instagram.com/sanjaysanthosh__"><img src="/images/icons8-instagram.svg" alt="instagram"/></a></li>
-                <li><Link to="/"><img src="/images/icons8-twitter-30.png" alt="twitter"/></Link></li>
+                <li><Link to="/"><img src="/images/icons8-facebook-f-50.png" alt="facebook"/></Link></li>
+                <li><a href="https://www.linkedin.com/in/sanjay-santhosh-31919026b/" target="__blank"><img src="/images/icons8-linkedin.svg" alt="linkedin" /></a></li>
+                <li><a href="https://www.instagram.com/sanjaysanthosh__" target="__blank"><img src="/images/icons8-instagram.svg" alt="instagram"/></a></li>
+                <li><Link to="/"><img src="/images/icons8-twitter-30.png" alt="twitter" /></Link></li>
               
             </ul>
         </div>

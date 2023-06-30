@@ -27,6 +27,10 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
+  code: {
+    type: String,
+    default: "",
+  },
   shippingAddresses: [ShippingAddressSchema],
   orders: [orderSchema],
   cartItems: [

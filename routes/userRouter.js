@@ -10,16 +10,16 @@ const checkLogin = require("../middleware/checkLogin");
 const Product = require("../models/productModel");
 const { sendMail } = require("./userAction");
 const { generateOTP } = require("./userAction");
+const { generateRandomCode } = require("./userAction");
 //Sign Up
 router.post("/register", async (req, res) => {
-
   const { name, email, password, cartItems } = req.body;
   const validation = validateCredentials(email, password);
 
   if (validation) {
     try {
       const existingUser = await User.findOne({ email: email });
-    
+
       if (existingUser) {
         return res.status(409).json({ message: "User already exists" });
       } else {
@@ -106,9 +106,9 @@ router.post("/login", async (req, res) => {
 //validate User
 router.get("/protected", checkLogin, (req, res) => {
   try {
-    res.status(200).json({ user: req.user,userId:req.user.id });
+    res.status(200).json({ user: req.user, userId: req.user.id });
   } catch (e) {
-    res.status(401).json({ error: e ,userId:req.user.id});
+    res.status(401).json({ error: e, userId: req.user.id });
   }
 });
 
@@ -143,35 +143,49 @@ router.post("/set-rating", checkLogin, (req, res) => {
       );
       if (existingProductIndex === -1) {
         user.ratedProducts.push({ productId, rating });
-        user.save().then(() => {
-          Product.findById(productId).then((product) => {
-            const sumOfRatings = product.rating * product.numberOfRating + rating;
-            product.numberOfRating += 1;
-            if (product.numberOfRating !== 0) {
-              const averageRating = sumOfRatings / product.numberOfRating;
-              let newRating = averageRating.toFixed(2);
-              product.rating = newRating;
-            }
-            product.save().then(() => {
-              res.status(200).json({ message: "Rating set successfully" });
-            }).catch((error) => {
-              res.status(400).json({ error: error });
-            });
-          }).catch((error) => {
+        user
+          .save()
+          .then(() => {
+            Product.findById(productId)
+              .then((product) => {
+                const sumOfRatings =
+                  product.rating * product.numberOfRating + rating;
+                product.numberOfRating += 1;
+                if (product.numberOfRating !== 0) {
+                  const averageRating = sumOfRatings / product.numberOfRating;
+                  let newRating = averageRating.toFixed(2);
+                  product.rating = newRating;
+                }
+                product
+                  .save()
+                  .then(() => {
+                    res
+                      .status(200)
+                      .json({ message: "Rating set successfully" });
+                  })
+                  .catch((error) => {
+                    res.status(400).json({ error: error });
+                  });
+              })
+              .catch((error) => {
+                res.status(400).json({ error: error });
+              });
+          })
+          .catch((error) => {
             res.status(400).json({ error: error });
           });
-        }).catch((error) => {
-          res.status(400).json({ error: error });
-        });
       } else {
-        res.status(400).json({ message: "Rating already exists for this product" });
+        res
+          .status(400)
+          .json({ message: "Rating already exists for this product" });
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       res.status(400).json({ error: error });
     });
 });
 router.get("/already-rated/:id", checkLogin, (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   User.findById(req.user.id)
     .then((user) => {
@@ -183,13 +197,11 @@ router.get("/already-rated/:id", checkLogin, (req, res) => {
       } else {
         res.status(201).json(false);
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       res.status(400).json({ error: error });
     });
 });
-
-
-
 
 // Delete a user
 router.delete("/user", checkLogin, (req, res) => {
@@ -210,7 +222,6 @@ router.delete("/user", checkLogin, (req, res) => {
 router.patch("/user", checkLogin, (req, res) => {
   const { name, password } = req.body;
 
-  
   bcrypt.hash(password, 10, async (err, hashedPassword) => {
     if (err) {
       console.error("Error hashing password:", err);
@@ -218,21 +229,22 @@ router.patch("/user", checkLogin, (req, res) => {
     }
 
     try {
-      if(name){
-      }else{
+      if (name) {
+      } else {
         User.findByIdAndUpdate(
           req.user.id,
-          {password: hashedPassword },
+          { password: hashedPassword },
           { new: true }
-        ).then((result) => {
-          res.status(200).json({ message: "Updated", result: result });
-        })
-        .catch((error) => {
-          res
-            .status(500)
-            .json({ error: "An error occurred while updating the user" });
-        });
-      }    
+        )
+          .then((result) => {
+            res.status(200).json({ message: "Updated", result: result });
+          })
+          .catch((error) => {
+            res
+              .status(500)
+              .json({ error: "An error occurred while updating the user" });
+          });
+      }
     } catch (error) {
       console.error("Error saving user with cart items:", error);
       res.status(500).json({ message: "Error saving user" });
@@ -256,11 +268,10 @@ router.get("/user-exist/:email", (req, res) => {
     });
 });
 
-router.post("/user/send-otp",async (req, res) => {
-  const id = req.body.id
+router.post("/user/send-otp", async (req, res) => {
+  const id = req.body.id;
   const otp = generateOTP(6);
   try {
-   
     // Update the user document in the database with the generated OTP
     const updatedUser = await User.findByIdAndUpdate(
       id,
@@ -271,7 +282,7 @@ router.post("/user/send-otp",async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
-    
+
     sendMail(
       updatedUser.email,
       "OTP Verification",
@@ -305,7 +316,8 @@ router.post("/user/otp-verify", (req, res) => {
       if (user) {
         if (user.otp == parseInt(otp)) {
           user.verification = true; // Set the user to be verified.
-          user.save()
+          user
+            .save()
             .then(() => {
               const token = jwt.sign(
                 {
@@ -333,7 +345,6 @@ router.post("/user/otp-verify", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     });
 });
-
 
 //Cart Operation
 
@@ -525,10 +536,74 @@ router.post("/user/otp", checkLogin, (req, res) => {
     .catch((e) => res.status(401).json({ error: e }));
 });
 
+//Verify using hash code
+router.get("/user/send-verify-code", checkLogin, async (req, res) => {
+  const code = generateRandomCode(30); // Generate a 6-digit OTP
+  try {
+    // Update the user document in the database with the generated OTP
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { code },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Send the OTP to the user's email for verification (implement your email sending logic here)
+    sendMail(
+      updatedUser.email,
+      "OTP Verification",
+      `Verify Your Account`,
+      `href="${process.env.URL}/api/user/code-verify?code=${code}&uid=${req.user.id}"`
+    )
+      .then(() => {
+        res
+          .status(200)
+          .json({ message: "OTP generated and sent for verification" });
+      })
+      .catch((error) => {
+        console.error("Error sending email:", error);
+        res
+          .status(500)
+          .json({ error: "An error occurred while sending the email" });
+      });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the user" });
+  }
+});
+
+router.get("/user/code-verify", async (req, res) => {
+  const code = req.query.code;
+  const id = req.query.uid;
+
+  try {
+    const user = await User.findById(id);
+
+    if (user) {
+      if (user.code === code) {
+        user.verification = true;
+        await user.save();
+        return res.status(200).redirect(process.env.URL);
+      } else {
+        return res.status(400).redirect(process.env.URL + "/login");
+      }
+    } else {
+      return res.status(404).redirect(process.env.URL + "/login");
+    }
+  } catch (error) {
+    return res.status(500).redirect(process.env.URL + "/login");
+  }
+});
+
+
 //Shipping
 
 router.post("/add-shipping", checkLogin, (req, res) => {
-  
   const shippingAddress = req.body;
   if (
     !shippingAddress.recipientName ||
@@ -547,17 +622,14 @@ router.post("/add-shipping", checkLogin, (req, res) => {
   )
     .then((user) => {
       if (user) {
-   
         res
           .status(200)
           .json({ message: "Shipping address added successfully" });
       } else {
-       
         res.status(404).json({ message: "User not found" });
       }
     })
     .catch((error) => {
-   
       res.status(500).json({ message: "An error occurred" });
     });
 });
@@ -659,7 +731,7 @@ router.post("/order-now", checkLogin, (req, res) => {
     const order = cartItems.map((item) => ({
       productId: item.productId,
       name: item.name,
-      price:item.price,
+      price: item.price,
       quantity: item.quantity,
     }));
 
@@ -681,7 +753,7 @@ router.post("/order-now", checkLogin, (req, res) => {
       items: order,
       totalPrice: totalPrice,
       orderDate: new Date(),
-      status:"Ordered",
+      status: "Ordered",
     };
 
     user.orders.push(newOrder);
@@ -695,21 +767,19 @@ router.post("/order-now", checkLogin, (req, res) => {
         "Your order has been  Placed Successfully.We will inform you About the Delivery Update"
       ); //send confirmation email to user.
       res.status(200).json({ message: "Order Confirmed" });
-      
     });
   });
 });
 
-router.get("/user/orders",checkLogin,(req,res)=>{
-  User.findById(req.user.id).then((user)=>{
-    if(user.orders.length!==0){
-
+router.get("/user/orders", checkLogin, (req, res) => {
+  User.findById(req.user.id).then((user) => {
+    if (user.orders.length !== 0) {
       res.status(200).json(user.orders);
-    }else{
-      res.status(400).json({message:"no order found"})
+    } else {
+      res.status(400).json({ message: "no order found" });
     }
-  })
-})
+  });
+});
 
 router.delete("/order-cancel/:id", checkLogin, (req, res) => {
   const orderId = req.params.id;
@@ -717,7 +787,9 @@ router.delete("/order-cancel/:id", checkLogin, (req, res) => {
   User.findById(req.user.id)
     .then((user) => {
       // Find the index of the order with the matching _id
-      const orderIndex = user.orders.findIndex((order) => order._id.toString() == orderId);
+      const orderIndex = user.orders.findIndex(
+        (order) => order._id.toString() == orderId
+      );
 
       if (orderIndex === -1) {
         // Return an error if the order is not found
@@ -726,16 +798,17 @@ router.delete("/order-cancel/:id", checkLogin, (req, res) => {
 
       // Remove the order from the array using splice()
       user.orders.splice(orderIndex, 1);
-    
+
       return user.save();
     })
     .then(() => {
       res.status(200).json({ message: "Order canceled successfully" });
     })
     .catch((error) => {
-      res.status(500).json({ error: "An error occurred while canceling the order" });
+      res
+        .status(500)
+        .json({ error: "An error occurred while canceling the order" });
     });
 });
-
 
 module.exports = router;

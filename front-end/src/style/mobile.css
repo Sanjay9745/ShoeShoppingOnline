@@ -118,11 +118,7 @@
     background-color: rgb(0, 255, 17);
     position: relative;
   }
-  .des-title {
-    margin-left: 20px;
-    width: 350px;
-    margin-top: -100px;
-  }
+
   .des-image {
     align-self: start;
   }
@@ -348,12 +344,8 @@ padding: 5px 15px;
   .circle {
     margin: unset;
   }
-  .des-image {
-    margin-top: -200px;
-  }
-  .des-title {
-    margin-top: -200px;
-  }
+
+
   .des-title h3 {
     width: 280px;
     font-size: 1rem;

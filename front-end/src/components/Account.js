@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import "../style/form.css";
 import axios from "axios";
@@ -21,6 +20,7 @@ function Account() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [timer, setTimer] = useState(30);
   const [isLoading, setIsLoading] = useState(true);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     "Content-Type": "application/json",
@@ -36,7 +36,6 @@ function Account() {
     } else {
       axios("/api/protected", { headers })
         .then((res) => {
-         
           if (res.status === 403 || res.status === 401) {
             localStorage.removeItem("token");
             navigate("/");
@@ -47,7 +46,7 @@ function Account() {
           navigate("/");
         });
     }
-  }, [ navigate]);
+  }, [navigate, headers]);
 
   useEffect(() => {
     axios
@@ -55,14 +54,13 @@ function Account() {
       .then((res) => {
         if (res.status === 200) {
           setVerified(true);
-         
         } else {
           setVerified(false);
         }
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, [verified]);
+  }, [headers]);
 
   function handleDeleteConfirmation() {
     confirmAlert({
@@ -127,26 +125,43 @@ function Account() {
 
   function handleVerify(e) {
     e.preventDefault();
-    toast.info("sending OTP");
     axios
-      .get("/api/user/verify", { headers })
+      .get("/api/user/is-verified", { headers })
       .then((res) => {
         if (res.status === 200) {
-    
-          if (!isButtonDisabled) {
-            setIsButtonDisabled(true);
-            setTimer(30);
+          const redirectPath = localStorage.getItem("redirectPath");
+          if (redirectPath) {
+            localStorage.removeItem("redirectPath"); // Remove the stored redirect path
+            navigate(redirectPath);
+          } else {
+            navigate("/");
           }
-          setBtn("Resend OTP");
-          toast.success("OTP sent to your registered email id", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 3000,
-          });
         } else {
-          toast.error("Something Went Wrong")
+          toast.error(res.data.error);
         }
       })
-      .catch((e) => toast.error("Something Went Wrong"));
+      .catch(() => {
+        toast.info("Sending OTP");
+        axios
+          .get("/api/user/send-verify-code", { headers })
+          .then((res) => {
+            if (res.status === 200) {
+              if (!isButtonDisabled) {
+                setIsButtonDisabled(true);
+                setTimer(30);
+              }
+              setBtn("Resend");
+              setIsButtonClicked(true);
+              toast.success("OTP sent to your registered email id", {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 3000,
+              });
+            } else {
+              toast.error("Something went wrong");
+            }
+          })
+          .catch((e) => toast.error("Something went wrong"));
+      });
   }
 
   useEffect(() => {
@@ -161,40 +176,41 @@ function Account() {
     } else if (timer === 0) {
       setIsButtonDisabled(false);
     }
-  }, [isButtonDisabled]);
+  }, [isButtonDisabled, timer]);
 
-  function handleSubmit(e) {
+  function handleCheckVerify(e) {
     e.preventDefault();
     axios
-      .post("/api/user/otp", { otp: password }, { headers })
+      .get("/api/user/is-verified", { headers })
       .then((res) => {
         if (res.status === 200) {
           const redirectPath = localStorage.getItem("redirectPath");
           if (redirectPath) {
             localStorage.removeItem("redirectPath"); // Remove the stored redirect path
             navigate(redirectPath);
-          }else{
-            navigate("/")
+          } else {
+            navigate("/");
           }
-        } else if (res.status === 404) {
-          toast.error("Incorrect OTP");
         } else {
           toast.error(res.data.error);
         }
       })
-      .catch((e) => toast.error("Something Went Wrong"));
+      .catch((e) => toast.error("Not verified"));
   }
 
   function updateProfile(e) {
     e.preventDefault();
-    let email = "hello@gmail.com";
+    let email = "hello@gmail.com"; // Replace with the appropriate email
     if (validate(name, email, password)) {
       axios
-        .patch("/api/user", { name: name, password: password }, { headers })
+        .patch(
+          "/api/user",
+          { name: name, password: password },
+          { headers: headers }
+        )
         .then((res) => {
           if (res.status === 200) {
             navigate("/");
-          
           } else {
             toast.error(res.data.error);
           }
@@ -204,12 +220,9 @@ function Account() {
   }
 
   if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    ); // Render a loading message or spinner while isLoading is true
+    return <Loading />;
   }
+
   return (
     <>
       <div className="container">
@@ -225,20 +238,12 @@ function Account() {
                     <p>Check Your Email</p>
                   </>
                 )}
-                <label htmlFor="otp">OTP: </label>
-                <input
-                  type="number"
-                  name="password"
-                  id="password"
-                  placeholder="Enter Your OTP"
-                  required
-                  autoComplete="off"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                {isButtonClicked && (
+                  <button className="form-btn" onClick={handleCheckVerify}>
+                    Verify
+                  </button>
+                )}
 
-                <button className="form-btn" onClick={handleSubmit}>
-                  Submit
-                </button>
                 <button
                   className="form-btn"
                   onClick={handleVerify}

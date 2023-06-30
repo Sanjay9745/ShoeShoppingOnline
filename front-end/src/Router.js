@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useLayoutEffect, useState, Suspense } from "react";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { animateScroll as scroll } from "react-scroll";
 import Loading from "./components/Loading";
 import ScrollToTop from "./components/ScrollToTop";
@@ -38,7 +38,6 @@ function Router() {
     };
 
     handleLoad(); // Call the handler immediately since we're already in a synchronous phase
-
   }, []);
 
   useLayoutEffect(() => {
@@ -47,60 +46,55 @@ function Router() {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Routes>
-          <Route element={<ScrollToTop />} />
-          <Route
-            path="/"
-            element={
-              <>
-                <Hero />
-                <HomeProduct />
-                <About />
-              </>
-            }
-          />
-          <Route path="/products" element={<Products />} />
-          <Route path="/carts" element={<Carts />} />
-          <Route path="/buy/:id" element={<BuyPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password/:id" element={<ForgotPassword />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/add-shipping" element={<ShippingAddress />} />
-          <Route path="/all-shipping" element={<AllShipping />} />
-          <Route path="/edit-shipping/:id" element={<EditShipping />} />
-          <Route path="/make-order" element={<MakeOrder />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/admin/*" element={<Admin />} />
-          <Route path="/admin/add-product" element={<AddProduct />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/product/:id" element={<AdminProductEdit />} />
-          <Route path="/admin/register" element={<AdminRegister />} />
-          <Route path="/admin/manage-user" element={<ManageUsers />} />
-          <Route
-            path="/admin/single-user-order/:id"
-            element={<AdminSingleOrder />}
-          />
-          <Route path="/admin/all-orders" element={<ViewUserOrders />} />
-          <Route
-            path="/admin/one-order/:userId/:orderId"
-            element={<OneOrder />}
-          />
-          <Route
-            path="*"
-            element={
-              <>
-                <Hero />
-                <HomeProduct />
-                <About />
-              </>
-            }
-          />
-        </Routes>
-      )}
+      <Suspense fallback={<Loading />}>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <Routes>
+            <Route element={<ScrollToTop />} />
+            <Route
+              exact
+              path="/"
+              element={
+                <>
+                  <Hero />
+                  <HomeProduct />
+                  <About />
+                </>
+              }
+            />
+
+            <Route path="/products" element={<Products />} />
+            <Route path="/carts" element={<Carts />} />
+            <Route path="/buy/:id" element={<BuyPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password/:id" element={<ForgotPassword />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/add-shipping" element={<ShippingAddress />} />
+            <Route path="/all-shipping" element={<AllShipping />} />
+            <Route path="/edit-shipping/:id" element={<EditShipping />} />
+            <Route path="/make-order" element={<MakeOrder />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/admin/add-product" element={<AddProduct />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/product/:id" element={<AdminProductEdit />} />
+            <Route path="/admin/register" element={<AdminRegister />} />
+            <Route path="/admin/manage-user" element={<ManageUsers />} />
+            <Route
+              path="/admin/single-user-order/:id"
+              element={<AdminSingleOrder />}
+            />
+            <Route path="/admin/all-orders" element={<ViewUserOrders />} />
+            <Route
+              path="/admin/one-order/:userId/:orderId"
+              element={<OneOrder />}
+            />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        )}
+      </Suspense>
     </>
   );
 }
