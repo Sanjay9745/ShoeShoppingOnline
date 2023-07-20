@@ -193,7 +193,7 @@ function Register() {
 
             <button className="form-btn">Sign Up</button>
             
-            <Link className="google-btn" to="/auth/google">
+            <Link className="google-btn" to="https://shoeshopping.onrender.com/auth/google">
               <img src="images/google.png" alt="" /> Sign up with Google
             </Link>
 
