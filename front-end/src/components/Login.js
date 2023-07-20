@@ -167,12 +167,12 @@ function Login() {
             <button className="form-btn">Sign In</button>
 
             <div className="google-div">
-              <Link
+              <a
                 className="google-btn"
-                to="https://shoeshopping.onrender.com/auth/google"
+                href="/auth/google"
               >
                 <img src="images/google.png" alt="" /> Login with Google
-              </Link>
+              </a>
             </div>
             <div>
               Go to <Link to="/register">Sign Up</Link>
