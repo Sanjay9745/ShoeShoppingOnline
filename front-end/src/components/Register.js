@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {MdContentCopy} from "react-icons/md"
+import { MdContentCopy } from "react-icons/md";
 import { validate } from "./validate";
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -134,8 +134,8 @@ function Register() {
   return (
     <>
       <div className="container">
-        <h1>Sign Up</h1>
         <div className="container-box">
+          <h1 className="signup-h1">Sign Up</h1>
           <form className="form-signin" onSubmit={handleSubmit} noValidate>
             <label htmlFor="username">Full Name:</label>
             <input
@@ -183,14 +183,20 @@ function Register() {
                   <p>Your password is weak. We suggest using:</p>
                   <div className="suggested-password">
                     <p>{passwordSuggestion}</p>
-                    <span onClick={handleCopyPassword}><MdContentCopy/></span>
+                    <span onClick={handleCopyPassword}>
+                      <MdContentCopy />
+                    </span>
                   </div>
                 </div>
               )}
             </div>
-            <div>
-              <button className="form-btn">Sign Up</button>
-            </div>
+
+            <button className="form-btn">Sign Up</button>
+            
+            <Link className="google-btn" to="/auth/google">
+              <img src="images/google.png" alt="" /> Sign up with Google
+            </Link>
+
             <div>
               Go to <Link to="/login">Login</Link>
             </div>

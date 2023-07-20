@@ -9,7 +9,7 @@
     text-align: start;
     margin-bottom: 0 !important;
 
-
+flex-direction: row;
     width: 100%;
     display: flex;
     height: 550px;

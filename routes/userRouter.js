@@ -466,7 +466,11 @@ router.get("/user/is-verified", checkLogin, (req, res) => {
   User.findOne({ _id: req.user.id })
     .then((user) => {
       if (user.verification) {
-        res.status(200).json({ message: "User is Verified" });
+        if (user.googleId) {
+          res.status(200).json({ message: "User is Verified", google: true });
+        } else {
+          res.status(200).json({ message: "User is Verified", google: false });
+        }
       } else {
         res.status(401).json({ message: "User needs to be verified" });
       }
@@ -477,6 +481,7 @@ router.get("/user/is-verified", checkLogin, (req, res) => {
 router.get("/user/verify", checkLogin, async (req, res) => {
   const otp = generateOTP(6); // Generate a 6-digit OTP
   try {
+    
     // Update the user document in the database with the generated OTP
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
@@ -603,7 +608,6 @@ router.get("/user/code-verify", async (req, res) => {
     return res.status(500).redirect(process.env.URL + "/login");
   }
 });
-
 
 //Shipping
 
@@ -776,13 +780,22 @@ router.post("/order-now", checkLogin, (req, res) => {
 });
 
 router.get("/user/orders", checkLogin, (req, res) => {
-  User.findById(req.user.id).then((user) => {
-    if (user.orders.length !== 0) {
-      res.status(200).json(user.orders);
-    } else {
-      res.status(400).json({ message: "no order found" });
-    }
-  });
+  User.findById(req.user.id)
+    .then((user) => {
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+
+      if (user.orders && user.orders.length !== 0) {
+        res.status(200).json(user.orders);
+      } else {
+        res.status(400).json({ message: "No order found" });
+      }
+    })
+    .catch((error) => {
+      console.error("Error finding user:", error);
+      res.status(500).json({ message: "Internal server error" });
+    });
 });
 
 router.delete("/order-cancel/:id", checkLogin, (req, res) => {

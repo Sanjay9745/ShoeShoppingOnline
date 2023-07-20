@@ -27,6 +27,7 @@ import AdminSingleOrder from "./components/Admin/AdminSingleOrder";
 import ViewUserOrders from "./components/Admin/ViewUserOrders";
 import OneOrder from "./components/Admin/OneOrder";
 import ForgotPassword from "./components/ForgotPassword";
+import StoreToken from "./components/StoreToken";
 
 function Router() {
   const [isLoading, setIsLoading] = useState(true);
@@ -64,6 +65,7 @@ function Router() {
               }
             />
 
+            <Route path="/storeToken" element={<StoreToken/>} />
             <Route path="/products" element={<Products />} />
             <Route path="/carts" element={<Carts />} />
             <Route path="/buy/:id" element={<BuyPage />} />

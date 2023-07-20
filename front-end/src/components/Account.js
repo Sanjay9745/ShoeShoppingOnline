@@ -21,6 +21,7 @@ function Account() {
   const [timer, setTimer] = useState(30);
   const [isLoading, setIsLoading] = useState(true);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [isGoogle, setIsGoogle] = useState(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const headers = {
     "Content-Type": "application/json",
@@ -53,6 +54,10 @@ function Account() {
       .get("/api/user/is-verified", { headers })
       .then((res) => {
         if (res.status === 200) {
+          console.log(res.data.google);
+          if (res.data.google) {
+            setIsGoogle(true);
+          }
           setVerified(true);
         } else {
           setVerified(false);
@@ -260,42 +265,65 @@ function Account() {
             </>
           ) : (
             <>
-              <form className="form-signin">
-                <h1>Update Profile</h1>
-                <label htmlFor="name">Name: </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Enter the Name to Update"
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <label htmlFor="password">Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="Enter Your Password"
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+              {isGoogle ? (
+                <>
+                  <button
+                    className="form-btn"
+                    onClick={() => navigate("/all-shipping")}
+                  >
+                    Edit Shipping Address
+                  </button>
 
-                <button className="form-btn" onClick={updateProfile}>
-                  Update My Account
-                </button>
-                <button
-                  className="form-btn"
-                  onClick={() => navigate("/all-shipping")}
-                >
-                  Edit Shipping Address
-                </button>
-              </form>
-              <div className="form-div">
-                <button className="form-btn" onClick={handleDeleteConfirmation}>
-                  Delete my account
-                </button>
-              </div>
+                  <button
+                    className="form-btn"
+                    onClick={handleDeleteConfirmation}
+                  >
+                    Delete my account
+                  </button>
+                </>
+              ) : (
+                <>
+                  <form className="form-signin">
+                    <h1>Update Profile</h1>
+                    <label htmlFor="name">Name: </label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Enter the Name to Update"
+                      required
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <label htmlFor="password">Password:</label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      placeholder="Enter Your Password"
+                      required
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    <button className="form-btn" onClick={updateProfile}>
+                      Update My Account
+                    </button>
+                    <button
+                      className="form-btn"
+                      onClick={() => navigate("/all-shipping")}
+                    >
+                      Edit Shipping Address
+                    </button>
+                  </form>
+                  <div className="form-div">
+                    <button
+                      className="form-btn"
+                      onClick={handleDeleteConfirmation}
+                    >
+                      Delete my account
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>

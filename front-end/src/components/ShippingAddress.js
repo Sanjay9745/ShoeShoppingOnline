@@ -83,8 +83,8 @@ function ShippingAddress() {
   return (
     <>
       <div className='container'>
-        <h1>Shipping Address</h1>
         <div className='container-box'>
+        <h1>Shipping Address</h1>
           <form className='form-signin' onSubmit={handleSubmit}>
             <label>Recipient's Name:</label>
             <input

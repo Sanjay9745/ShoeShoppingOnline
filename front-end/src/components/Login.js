@@ -96,14 +96,18 @@ function Login() {
     }
   }
   function ForgotPassword() {
-    axios
-      .get("/api/user-exist/" + email)
-      .then((res) => {
-        if (res.status === 200) {
-          navigate("/forgot-password/" + res.data.id);
-        }
-      })
-      .catch((e) => console.log(e));
+    if (!email) {
+      toast.error("Enter Your Email");
+    } else {
+      axios
+        .get("/api/user-exist/" + email)
+        .then((res) => {
+          if (res.status === 200) {
+            navigate("/forgot-password/" + res.data.id);
+          }
+        })
+        .catch((e) => console.log(e));
+    }
   }
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -119,8 +123,8 @@ function Login() {
   return (
     <>
       <div className="container">
-        <h1>Sign In</h1>
         <div className="container-box">
+          <h1>Sign In</h1>
           <form className="form-signin" onSubmit={handleSubmit}>
             <label htmlFor="email">Email:</label>
             <input
@@ -159,8 +163,16 @@ function Login() {
             <p className="forgot" onClick={ForgotPassword}>
               Forgot Password
             </p>
-            <div>
-              <button className="form-btn">Sign In</button>
+
+            <button className="form-btn">Sign In</button>
+
+            <div className="google-div">
+              <Link
+                className="google-btn"
+                to="/auth/google"
+              >
+                <img src="images/google.png" alt="" /> Login with Google
+              </Link>
             </div>
             <div>
               Go to <Link to="/register">Sign Up</Link>

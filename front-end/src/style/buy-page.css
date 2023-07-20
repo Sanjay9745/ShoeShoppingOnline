@@ -12,13 +12,13 @@ body {
   scroll-behavior: smooth;
 }
 .container {
-  padding: 80px 80px 0 80px;
+  padding: 80px 80px 0 0px;
 text-align: start;
 margin-bottom: 120px;
 
 }
 .container.cart {
-  padding: 45px 80px 0 80px;
+  padding: 80px 80px 0 0px;
 text-align: start;
 
 }

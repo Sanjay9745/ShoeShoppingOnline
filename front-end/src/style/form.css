@@ -1,15 +1,28 @@
+.container{
+  width: 100%;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .container-box{
-    width: 60%;
+
+  width: 30%;
     padding: 50px;
+    padding-top: 10px;
     border-radius: 20px;
     box-shadow : rgba(84, 80, 80, 0.17) 2px 3px 20px;
+    
   }
 .form-signin{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 20px;
- 
+    gap: 15px;
+}
+.signup-h1{
+  margin-top: 0;
 }
 footer{
   margin-top: 50px;
@@ -27,14 +40,14 @@ a{
 }
 input{
     outline: none;
-    padding: 20px 40px;
-    font-size: 16px;
+    padding: 15px 30px;
+    font-size: 14px;
     border: none;
     box-shadow : rgba(84, 80, 80, 0.17) 2px 3px 20px;
     border-radius: 20px;
   }
 .form-btn {
-    margin: 20px 0;
+  margin:10px 0;
     align-self: center;
     padding: 15px 100px;
     border: 2px solid rgb(66, 183, 255);
@@ -66,11 +79,15 @@ input{
     display: flex;
     flex-direction: column;
   }
+  .password input{
+    margin-top: 10px;
+  }
   .toggle-password-btn{
     position: absolute;
-    top: 40px;
+    top: 50px;
     right: 20px;
   }
+
   p.forgot{
     cursor: pointer;
     color:rgb(230, 71, 143);
@@ -99,7 +116,29 @@ input::-webkit-inner-spin-button {
 .suggested-password span:hover{
   opacity: .7;
 }
+.google-div{
+  width: 100%;
+    display: flex;
+  justify-content:center;
+  align-items: center;
+  margin: 10px 0;
+}
+.google-btn{
+  margin-top:10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(47, 44, 44);
+  font-size: 1.1rem;
 
+  gap: 15px;
+  box-shadow : rgba(179, 181, 183, 0.289) 3px 3px 20px;
+  padding: 15px 50px;
+  border-radius: 25px;
+}
+.google-btn img{
+  width: 20px;
+}
   @media (max-width:600px){
     .container-box{
       width: 90%;
@@ -115,4 +154,12 @@ input::-webkit-inner-spin-button {
     .container{
       margin-top: 50px;
     }
+    .google-div{
+      justify-content:center;
+    }
+      .google-btn{
+
+        padding: 15px 30px;
+
+      }
   }

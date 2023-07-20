@@ -6,6 +6,9 @@ const orderSchema = require("./orderModel");
 
 // Define the user schema
 const userSchema = new Schema({
+  googleId: {
+    type: String,
+  },
   name: {
     type: String,
     required: true,
@@ -13,11 +16,9 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
   },
   password: {
     type: String,
-    required: true,
   },
   verification: {
     type: Boolean,
@@ -45,14 +46,15 @@ const userSchema = new Schema({
       price: Number,
     },
   ],
-  ratedProducts:[ {
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Product,
+  ratedProducts: [
+    {
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Product,
+      },
+      rating: Number,
     },
-    rating:Number
-  },],
-
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
