@@ -57,7 +57,8 @@ function Login() {
         
           if (res.status === 200) {
             if (res.data.requiresGoogleAuth) {
-          navigate("/auth/google")
+              // Redirect to the Google authentication URL and refresh the page
+              window.location.href = "/auth/google";
             } else {
               localStorage.setItem("token", res.data.token);
               axios("/api/cart-items", {

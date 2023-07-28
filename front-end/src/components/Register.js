@@ -66,7 +66,8 @@ function Register() {
         .then((res) => {
           if (res.status === 200) {
             if (res.data.requiresGoogleAuth) {
-              navigate("/auth/google");
+              // Redirect to the Google authentication URL and refresh the page
+              window.location.href = "/auth/google";
             } else {
               localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
 
