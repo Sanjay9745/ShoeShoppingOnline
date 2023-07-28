@@ -10,9 +10,9 @@ import { validate } from "./validateLogin";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
+
 function Login() {
   const [isLoading, setIsLoading] = useState(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const dispatch = useDispatch();
   const headers = {
     "Content-Type": "application/json",
@@ -38,6 +38,7 @@ function Login() {
       setIsLoading(false);
     }
   }, [navigate, headers]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -46,7 +47,6 @@ function Login() {
 
     if (validate(email, password)) {
       const params = JSON.stringify({
-        //string or number or object or array or boolean or null or undefined. 	Can also be a function or other custom data
         email: email,
         password: password,
       });
@@ -54,32 +54,39 @@ function Login() {
       axios
         .post("/api/login", params, { headers })
         .then((res) => {
+        
           if (res.status === 200) {
-            localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
-            axios("/api/cart-items", {
-              headers: {
-                "Content-Type": "application/json",
-                "x-access-token": res.data.token,
-              },
-            }).then((res) => {
-              if (res.status === 200) {
-                dispatch(addAllItems(res.data.cartItems));
-                localStorage.setItem(
-                  "cart",
-                  JSON.stringify(res.data.cartItems)
-                ); //cart is the key to store the cart in the storage.  localStorage is a built in JavaScript
-              }
-            });
-            toast.success("Sign In Successfully", {
-              position: toast.POSITION.TOP_RIGHT,
-              autoClose: 2000,
-            });
-            const redirectPath = localStorage.getItem("redirectPath");
-            if (redirectPath) {
-              localStorage.removeItem("redirectPath"); // Remove the stored redirect path
-              navigate(redirectPath);
+            if (res.data.requiresGoogleAuth) {
+          navigate("/auth/google")
             } else {
-              navigate("/"); // If no redirect path is found, navigate to the default path
+              localStorage.setItem("token", res.data.token);
+              axios("/api/cart-items", {
+                headers: {
+                  "Content-Type": "application/json",
+                  "x-access-token": res.data.token,
+                },
+              }).then((res) => {
+                if (res.status === 200) {
+                  dispatch(addAllItems(res.data.cartItems));
+                  localStorage.setItem(
+                    "cart",
+                    JSON.stringify(res.data.cartItems)
+                  );
+                }
+              });
+
+              toast.success("Sign In Successfully", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+              });
+
+              const redirectPath = localStorage.getItem("redirectPath");
+              if (redirectPath) {
+                localStorage.removeItem("redirectPath");
+                navigate(redirectPath);
+              } else {
+                navigate("/");
+              }
             }
           } else if (res.status === 401) {
             toast.error("Incorrect Password");
@@ -92,10 +99,14 @@ function Login() {
         .catch((res) => {
           toast.error("Login Failed Please Check Your Email or password");
         });
-      //console log the data from the server
     }
   }
-  function ForgotPassword() {
+
+  function handleTogglePassword() {
+    setShowPassword((prevState) => !prevState);
+  }
+
+  function handleForgotPassword() {
     if (!email) {
       toast.error("Enter Your Email");
     } else {
@@ -109,79 +120,72 @@ function Login() {
         .catch((e) => console.log(e));
     }
   }
-  const handleTogglePassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   if (isLoading) {
-    return (
-      <>
-        <Loading />
-      </>
-    ); // Render a loading message or spinner while isLoading is true
+    return <Loading />;
   }
+
   return (
-    <>
-      <div className="container">
-        <div className="container-box">
-          <h1>Sign In</h1>
-          <form className="form-signin" onSubmit={handleSubmit}>
-            <label htmlFor="email">Email:</label>
+    <div className="container">
+      <div className="container-box">
+        <h1>Sign In</h1>
+        <form className="form-signin" onSubmit={handleSubmit}>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Enter Your Email"
+            required
+            autoFocus
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="password">
+            <label htmlFor="password">Password:</label>
             <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Enter Your Email"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              name="password"
+              placeholder="Enter Your Password"
               required
-              autoFocus
-              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="false"
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <div className="password">
-              <label htmlFor="password">Password:</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                name="password"
-                placeholder="Enter Your Password"
-                required
-                autoComplete="false"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <span
-                type="button"
-                className="toggle-password-btn"
-                onClick={handleTogglePassword}
-              >
-                {showPassword ? (
-                  <img src="/images/show.png" alt="" />
-                ) : (
-                  <img src="/images/hide.png" alt="" />
-                )}
-              </span>
-            </div>
-            <p className="forgot" onClick={ForgotPassword}>
+            <span
+              className="toggle-password-btn"
+              role="button"
+              onClick={handleTogglePassword}
+            >
+              {showPassword ? (
+                <img src="/images/show.png" alt="" />
+              ) : (
+                <img src="/images/hide.png" alt="" />
+              )}
+            </span>
+          </div>
+          <p className="forgot" onClick={handleForgotPassword}>
               Forgot Password
             </p>
+          <button className="form-btn">Sign In</button>
 
-            <button className="form-btn">Sign In</button>
-
-            <div className="google-div">
-              <a
-                className="google-btn"
-                href="/auth/google"
-              >
-                <img src="images/google.png" alt="" /> Login with Google
-              </a>
-            </div>
-            <div>
-              Go to <Link to="/register">Sign Up</Link>
-            </div>
-          </form>
-          <ToastContainer />
-        </div>
+          <div className="google-div">
+            <a
+              className="google-btn"
+              href="/auth/google"
+              aria-label="Login with Google"
+            >
+              <img src="images/google.png" alt="" /> Login with Google
+            </a>
+          </div>
+          <div>
+            Go to <Link to="/register">Sign Up</Link>
+          </div>
+         
+        </form>
+        <ToastContainer />
       </div>
-    </>
+    </div>
   );
 }
 

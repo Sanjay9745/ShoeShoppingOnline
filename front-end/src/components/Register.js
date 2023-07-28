@@ -65,12 +65,16 @@ function Register() {
 
         .then((res) => {
           if (res.status === 200) {
-            localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
+            if (res.data.requiresGoogleAuth) {
+              navigate("/auth/google");
+            } else {
+              localStorage.setItem("token", res.data.token); //token is the key to store the token in the storage.  localStorage is a built in JavaScript storage.  localStorage.token is the key to store the token in the storage.  token is what we store in the storage.  localStorage.token is what we get from the storage.  token is what we store in the local storage.  localStorage.token is what we get from the storage.  So, we set the token in the storage to the token we get from the storage.  So, we can now use the token
 
-            toast.success("Sign Up Success", {
-              position: toast.POSITION.TOP_RIGHT,
-              autoClose: 2000,
-            });
+              toast.success("Sign Up Success", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000,
+              });
+            }
           }
 
           const redirectPath = localStorage.getItem("redirectPath");
@@ -192,7 +196,7 @@ function Register() {
             </div>
 
             <button className="form-btn">Sign Up</button>
-            
+
             <a className="google-btn" href="/auth/google">
               <img src="images/google.png" alt="" /> Sign up with Google
             </a>

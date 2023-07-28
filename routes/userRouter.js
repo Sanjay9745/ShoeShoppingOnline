@@ -22,8 +22,7 @@ router.post("/register", async (req, res) => {
 
       if (existingUser) {
         if (existingUser.googleId) {
-          console.log("hello");
-          res.redirect(process.env.URL + "/auth/google");
+          return res.status(200).json({ requiresGoogleAuth: true });
         } else {
           return res.status(409).json({ message: "User already exists" });
         }
@@ -74,19 +73,19 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const validation = validateCredentials(email, password);
   if (!validation) {
-    res.status(400).json({ message: "Email or password invalid" });
+    return res.status(400).json({ message: "Email or password invalid" });
   }
   try {
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       if (existingUser.googleId) {
-        console.log("hello");
-        res.redirect(process.env.URL + "/auth/google");
+        // Instead of redirecting, return a specific response to handle on the client-side
+        return res.status(200).json({ requiresGoogleAuth: true });
       } else {
         bcrypt.compare(password, existingUser.password, (err, result) => {
           if (err) {
             console.error("Error comparing passwords:", err);
-            return;
+            return res.status(500).json({ error: "Internal server error" });
           }
 
           if (result) {
@@ -98,20 +97,20 @@ router.post("/login", async (req, res) => {
               process.env.JWT_USER_SECRET,
               { expiresIn: "1h" }
             );
-            res.status(200).json({ auth: true, token: token });
+            return res.status(200).json({ auth: true, token: token });
           } else {
-            res.status(401).json({ message: "incorrect password" });
+            return res.status(401).json({ message: "Incorrect password" });
           }
         });
       }
     } else {
       return res.status(409).json({ message: "User doesn't exist" });
     }
-    // Send a response with the newly created user
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
+
 
 //validate User
 router.get("/protected", checkLogin, (req, res) => {
