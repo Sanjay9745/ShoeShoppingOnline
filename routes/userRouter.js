@@ -21,7 +21,12 @@ router.post("/register", async (req, res) => {
       const existingUser = await User.findOne({ email: email });
 
       if (existingUser) {
-        return res.status(409).json({ message: "User already exists" });
+        if (existingUser.googleId) {
+          console.log("hello");
+          res.redirect(process.env.URL + "/auth/google");
+        } else {
+          return res.status(409).json({ message: "User already exists" });
+        }
       } else {
         bcrypt.hash(password, 10, async (err, hashedPassword) => {
           if (err) {
@@ -74,26 +79,31 @@ router.post("/login", async (req, res) => {
   try {
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
-      bcrypt.compare(password, existingUser.password, (err, result) => {
-        if (err) {
-          console.error("Error comparing passwords:", err);
-          return;
-        }
+      if (existingUser.googleId) {
+        console.log("hello");
+        res.redirect(process.env.URL + "/auth/google");
+      } else {
+        bcrypt.compare(password, existingUser.password, (err, result) => {
+          if (err) {
+            console.error("Error comparing passwords:", err);
+            return;
+          }
 
-        if (result) {
-          let token = jwt.sign(
-            {
-              id: existingUser._id,
-              name: existingUser.name,
-            },
-            process.env.JWT_USER_SECRET,
-            { expiresIn: "1h" }
-          );
-          res.status(200).json({ auth: true, token: token });
-        } else {
-          res.status(401).json({ message: "incorrect password" });
-        }
-      });
+          if (result) {
+            let token = jwt.sign(
+              {
+                id: existingUser._id,
+                name: existingUser.name,
+              },
+              process.env.JWT_USER_SECRET,
+              { expiresIn: "1h" }
+            );
+            res.status(200).json({ auth: true, token: token });
+          } else {
+            res.status(401).json({ message: "incorrect password" });
+          }
+        });
+      }
     } else {
       return res.status(409).json({ message: "User doesn't exist" });
     }
@@ -481,7 +491,6 @@ router.get("/user/is-verified", checkLogin, (req, res) => {
 router.get("/user/verify", checkLogin, async (req, res) => {
   const otp = generateOTP(6); // Generate a 6-digit OTP
   try {
-    
     // Update the user document in the database with the generated OTP
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,

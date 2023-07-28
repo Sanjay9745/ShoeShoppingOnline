@@ -35,7 +35,7 @@ function HomeProduct() {
      <div className="container home">
      {selectedProducts.map((product) => (
   <div className="card home" key={product._id}>
-    <div className="imgBx">
+    <div className="imgBx"  onClick={() => navigate(`/buy/${product._id}`)}>
       <img src={product.img}  alt="card"/>
     </div>
     <div className="contentBx">
