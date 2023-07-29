@@ -41,8 +41,8 @@ tbody tr:hover {
   padding: 8px 20px;
 }
 .search-bar.scrolled {
-top: 8px;
-left: 500px;
+top: 7px;
+left: 300px;
 z-index: 10;
 }
 .products{
